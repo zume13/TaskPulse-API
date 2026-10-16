@@ -1,4 +1,4 @@
-﻿using SharedKernel.Shared;
+﻿using Shared.ResultPattern;
 
 namespace Domain.Aggregates.Tasks.Task.Errors
 {

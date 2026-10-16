@@ -1,26 +1,25 @@
 ﻿using LeaveManagement.SharedKernel.Primitives;
-using SharedKernel.Shared;
+using Shared.ResultPattern;
 
-namespace Domain.Aggregates.User.ValueObjects
+namespace Domain.Aggregates.User.ValueObjects;
+
+public class Email : ValueObject
 {
-    public class Email : ValueObject
+    public string Value { get; private set; } = null!;
+
+    public override IEnumerable<object> GetAtomicValues()
     {
-        public string Value { get; private set; } = null!;
+        yield return Value;
+    }
 
-        public override IEnumerable<object> GetAtomicValues()
-        {
-            yield return Value;
-        }
+    public static ResultT<Email> Create(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return GeneralErrors.General.Empty("Email");
 
-        public static ResultT<Email> Create(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return GeneralErrors.General.Empty("Email");
+        if (!value.Contains("@"))
+            return GeneralErrors.General.Invalid("Email");
 
-            if (!value.Contains("@"))
-                return GeneralErrors.General.Invalid("Email");
-
-            return new Email { Value = value };
-        }
+        return new Email { Value = value };
     }
 }

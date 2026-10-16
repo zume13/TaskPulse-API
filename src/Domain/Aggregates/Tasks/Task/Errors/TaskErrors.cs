@@ -1,5 +1,4 @@
 ﻿using Shared.ResultPattern;
-using System.Data;
 
 namespace Domain.Aggregates.Tasks.Task.Errors
 {

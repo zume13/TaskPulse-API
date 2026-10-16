@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SharedKernel.DomainEvent;
 
-namespace Domain.Aggregates.User.Events
+namespace Domain.Aggregates.User.Events;
+
+public record UserRegistered(Guid UserId, string Email, string FirstName, string VerificationToken) : IDomainEvent
 {
-    internal class UserRegistered
-    {
-    }
+    public string DomainEventName => DomainEventsNames.UserEventNames.UserRegistered;
 }

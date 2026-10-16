@@ -1,11 +1,10 @@
-﻿
-namespace SharedKernel.DomainEvent
+﻿namespace SharedKernel.DomainEvent;
+
+public static class DomainEventsNames
 {
-    public static class DomainEventsNames
+    public static class UserEventNames
     {
-        public static class UserEventNames
-        {
-            public const string UserCreated = "UserCreated";
-        }
+        public const string UserRegistered = "UserRegistered";
+        public const string PasswordChanged = "PasswordChanged";
     }
 }

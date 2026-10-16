@@ -33,7 +33,7 @@ public class User : AggregateRoot
     public bool IsEmailVerified => VerificationToken is null;
 
 
-    public ResultT<User> Create(string email, string hashedPassword, string firstName, string lastName, Role role, string verificationToken, DateTime nowUtc)
+    public static ResultT<User> Create(string email, string hashedPassword, string firstName, string lastName, Role role, string verificationToken, DateTime nowUtc)
     {
         var newEmail = Email.Create(email);
         var newPasswordHash = HashedPassword.Create(hashedPassword);

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SharedKernel.DomainEvent;
 
-namespace Domain.Aggregates.User.Events
+namespace Domain.Aggregates.User.Events;
+
+public record PasswordChanged(Guid UserId, string Email) : IDomainEvent
 {
-    internal class PasswordChanged
-    {
-    }
+    public string DomainEventName => DomainEventsNames.UserEventNames.PasswordChanged;
 }

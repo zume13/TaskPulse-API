@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Aggregates\Collaboration\Workspaces\Member\ValueObjects\" />
+    <Folder Include="Aggregates\Tasks\Assignment\" />
+  </ItemGroup>
+
 </Project>

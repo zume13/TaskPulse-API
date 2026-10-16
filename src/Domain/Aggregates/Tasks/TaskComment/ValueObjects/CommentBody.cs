@@ -1,5 +1,5 @@
 ﻿using LeaveManagement.SharedKernel.Primitives;
-using SharedKernel.Shared;
+using Shared.ResultPattern;
 
 namespace Domain.Aggregates.Tasks.TaskComment.ValueObjects
 {

@@ -20,6 +20,8 @@ public class Name : ValueObject
         if (value.Length > 100)
             return GeneralErrors.General.Invalid("Name");
 
-        return new Name { Value = value };
+        var Value = value.Trim();
+
+        return new Name { Value = Value };
     }
 }

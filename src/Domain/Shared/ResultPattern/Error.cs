@@ -26,5 +26,8 @@ namespace Shared.ResultPattern
         public static Error Conflict(string code, string message) => new(code, message, ErrorType.Conflict);
         public static Error Problem(string code, string message) => new(code, message, ErrorType.Problem);
         public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
+        public static Error Unauthorized(string code, string message) => new(code, message, ErrorType.Unauthorized);
+        public static Error Forbidden(string code, string message) => new(code, message, ErrorType.Forbidden);
+
     }
 }

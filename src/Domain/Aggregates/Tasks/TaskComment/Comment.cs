@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.Tasks.TaskComment.ValueObjects;
+﻿using Domain.Aggregates.Tasks.Task.Errors;
+using Domain.Aggregates.Tasks.TaskComment.ValueObjects;
 using LMS.SharedKernel.Primitives;
 using Shared.ResultPattern;
 
@@ -21,10 +22,13 @@ public class Comment : Entity
     private Comment() { }
 
     public Guid AuthorId { get; private set; }
-
     public CommentBody Body { get; private set; } = null!;
 
     public DateTime CreatedAtUtc { get; private set; }
+    public DateTime? UpdatedAtUtc { get; private set; }
+
+    public bool IsDeleted { get; private set; }
+    public DateTime? DeletedAtUtc { get; private set; }
 
     public static ResultT<Comment> Create(
         Guid authorId,
@@ -44,10 +48,28 @@ public class Comment : Entity
             nowUtc);
     }
 
-    public static ResultT<Comment> Create(
-        Guid authorId,
-        CommentBody body)
+    public Result Edit(CommentBody body, DateTime nowUtc)
     {
-        return Create(authorId, body, DateTime.UtcNow);
+        if (IsDeleted)
+            return TaskCommentErrors.CommentDeleted;
+
+        if (body is null)
+            return GeneralErrors.General.Empty(nameof(body));
+
+        Body = body;
+        UpdatedAtUtc = nowUtc;
+
+        return Result.Success();
+    }
+
+    public Result Delete(DateTime nowUtc)
+    {
+        if (IsDeleted)
+            return TaskCommentErrors.CommentDeleted;
+
+        IsDeleted = true;
+        DeletedAtUtc = nowUtc;
+
+        return Result.Success();
     }
 }

@@ -226,6 +226,53 @@ namespace Domain.Aggregates.Tasks.Task
             return Result.Success();
         }
 
+        public Result EditComment(
+            Guid commentId,
+            Guid actorId,
+            CommentBody body,
+            DateTime nowUtc)
+        {
+            if (IsDeleted)
+                return TaskErrors.TaskDeleted;
+
+            if (actorId == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(actorId));
+
+            var comment = _comments.FirstOrDefault(
+                c => c.Id == commentId && !c.IsDeleted);
+
+            if (comment is null)
+                return TaskCommentErrors.CommentNotFound;
+
+            if (comment.AuthorId != actorId)
+                return TaskCommentErrors.CommentNotOwnedByUser;
+
+            return comment.Edit(body, nowUtc);
+        }
+
+        public Result DeleteComment(
+            Guid commentId,
+            Guid actorId,
+            DateTime nowUtc)
+        {
+            if (IsDeleted)
+                return TaskErrors.TaskDeleted;
+
+            if (actorId == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(actorId));
+
+            var comment = _comments.FirstOrDefault(
+                c => c.Id == commentId && !c.IsDeleted);
+
+            if (comment is null)
+                return TaskCommentErrors.CommentNotFound;
+
+            if (comment.AuthorId != actorId)
+                return TaskCommentErrors.CommentNotOwnedByUser;
+
+            return comment.Delete(nowUtc);
+        }
+
         /// <remarks>
         /// The application layer must verify that the author
         /// is a member of this task's workspace.
@@ -234,13 +281,15 @@ namespace Domain.Aggregates.Tasks.Task
             Guid authorId,
             CommentBody body)
         {
+            var nowUtc = SystemConstants.UtcNow;
+
             if (IsDeleted)
                 return TaskErrors.TaskDeleted;
 
             if (authorId == Guid.Empty)
                 return GeneralErrors.General.Empty(nameof(authorId));
 
-            var result = Comment.Create(authorId, body);
+            var result = Comment.Create(authorId, body, nowUtc);
 
             if (result.IsFailure)
                 return result.Error;

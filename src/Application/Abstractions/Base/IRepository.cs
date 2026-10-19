@@ -1,4 +1,4 @@
-﻿using SharedKernel.Primitives;
+﻿using Domain.Shared.Primitives;
 
 namespace Application.Abstractions.Base;
 

@@ -1,9 +1,7 @@
 ﻿using Application.Behaviours.Validations;
-using Application.Features.Auth.Events;
-using Domain.Aggregates.User.Events;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using SharedKernel.DomainEvent;
+
 
 namespace Application;
 

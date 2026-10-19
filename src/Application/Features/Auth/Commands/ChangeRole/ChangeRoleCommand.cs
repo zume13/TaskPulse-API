@@ -1,6 +1,6 @@
-﻿using Domain.Aggregates.User.Enum;
+﻿using Domain.Aggregates.User.Enums;
+using Domain.Shared.ResultPattern;
 using MediatR;
-using Shared.ResultPattern;
 
 namespace Application.Features.Auth.Commands.ChangeRole;
 

@@ -1,5 +1,6 @@
-﻿using SharedKernel.Primitives;
-using Shared.ResultPattern;
+﻿using Domain.Aggregates.RefreshToken.Errors;
+using Domain.Shared.Primitives;
+using Domain.Shared.ResultPattern;
 
 namespace Domain.Aggregates.RefreshToken;
 

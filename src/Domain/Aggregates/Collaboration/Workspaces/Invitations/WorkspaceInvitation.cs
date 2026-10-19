@@ -1,6 +1,6 @@
 ﻿using Domain.Aggregates.Collaboration.Workspaces.Invitations.Enums;
 using Domain.Aggregates.Collaboration.Workspaces.Member.Enums;
-using LMS.SharedKernel.Primitives;
+using Domain.Shared.Primitives;
 
 namespace Domain.Aggregates.Collaboration.Workspaces.Invitations
 {

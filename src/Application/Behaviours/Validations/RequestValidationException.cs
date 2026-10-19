@@ -1,5 +1,6 @@
-﻿using FluentValidation.Results;
-using Shared.ResultPattern;
+﻿using Domain.Shared.ResultPattern;
+using FluentValidation.Results;
+
 
 namespace Application.Behaviours.Validations;
 

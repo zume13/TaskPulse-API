@@ -1,4 +1,4 @@
-﻿namespace SharedKernel.DomainEvent;
+﻿namespace Domain.Shared.DomainEvent;
 
 public static class DomainEventsNames
 {

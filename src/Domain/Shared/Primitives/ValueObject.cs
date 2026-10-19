@@ -1,5 +1,5 @@
 ﻿
-namespace LeaveManagement.SharedKernel.Primitives
+namespace Domain.Shared.Primitives
 {
     public abstract class ValueObject
     {

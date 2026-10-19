@@ -1,4 +1,4 @@
-﻿using SharedKernel.DomainEvent;
+﻿using Domain.Shared.DomainEvent;
 
 namespace Domain.Aggregates.User.Events;
 

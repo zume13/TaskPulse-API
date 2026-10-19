@@ -1,4 +1,4 @@
-﻿using Domain.Aggregates.User.Enum;
+﻿using Domain.Aggregates.User.Enums;
 
 namespace Application.Dto;
 

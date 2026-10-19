@@ -1,5 +1,5 @@
-﻿using MediatR;
-using Shared.ResultPattern;
+﻿using Domain.Shared.ResultPattern;
+using MediatR;
 
 namespace Application.Features.Auth.Commands.VerifyEmail;
 

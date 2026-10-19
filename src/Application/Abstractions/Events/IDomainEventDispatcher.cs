@@ -1,4 +1,5 @@
-﻿using SharedKernel.DomainEvent;
+﻿
+using Domain.Shared.DomainEvent;
 
 namespace Application.Abstractions.Events;
 

@@ -1,8 +1,8 @@
 ﻿using Application.Abstractions.Base;
-using Application.Abstractions.Repositories;
+using Domain.Aggregates.User;
 using Domain.Aggregates.User.Errors;
+using Domain.Shared.ResultPattern;
 using MediatR;
-using Shared.ResultPattern;
 
 namespace Application.Features.Auth.Commands.VerifyEmail;
 

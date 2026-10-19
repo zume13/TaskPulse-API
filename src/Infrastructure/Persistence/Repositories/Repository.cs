@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Base;
+using Domain.Shared.Primitives;
 using Infrastructure.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel.Primitives;
 
 namespace Infrastructure.Persistence.Repositories;
 

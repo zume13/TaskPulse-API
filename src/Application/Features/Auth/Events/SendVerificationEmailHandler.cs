@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Auth;
 using Domain.Aggregates.User.Events;
-using SharedKernel.DomainEvent;
+using Domain.Shared.DomainEvent;
 
 namespace Application.Features.Auth.Events;
 

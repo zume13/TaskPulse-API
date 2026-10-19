@@ -1,5 +1,5 @@
 ﻿
-namespace Shared.ResultPattern
+namespace Domain.Shared.ResultPattern
 {
     public static class GeneralErrors
     {

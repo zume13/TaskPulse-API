@@ -1,5 +1,5 @@
 ﻿using Domain.Aggregates.Tasks.Task.Errors;
-using Shared.ResultPattern;
+using Domain.Shared.ResultPattern;
 
 namespace Domain.Aggregates.Tasks.Task.ValueObjects
 {

@@ -1,7 +1,8 @@
 ﻿using Application.Abstractions.Auth;
 using Application.Abstractions.Base;
 using Application.Abstractions.Events;
-using Application.Abstractions.Repositories;
+using Domain.Aggregates.RefreshToken;
+using Domain.Aggregates.User;
 using Infrastructure.Events;
 using Infrastructure.Persistence.Database;
 using Infrastructure.Persistence.Repositories;

@@ -1,7 +1,7 @@
 ﻿using Domain.Aggregates.Tasks.Task.Errors;
 using Domain.Aggregates.Tasks.TaskComment.ValueObjects;
-using LMS.SharedKernel.Primitives;
-using Shared.ResultPattern;
+using Domain.Shared.Primitives;
+using Domain.Shared.ResultPattern;
 
 namespace Domain.Aggregates.Tasks.TaskComment;
 

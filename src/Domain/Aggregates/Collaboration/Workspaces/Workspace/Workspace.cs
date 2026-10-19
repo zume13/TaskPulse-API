@@ -3,10 +3,11 @@ using Domain.Aggregates.Collaboration.Workspaces.Invitations.Enums;
 using Domain.Aggregates.Collaboration.Workspaces.Member;
 using Domain.Aggregates.Collaboration.Workspaces.Member.Enums;
 using Domain.Aggregates.Collaboration.Workspaces.Workspace.Errors;
+using Domain.Shared.Primitives;
+using Domain.Shared.ResultPattern;
 using Domain.Shared.ValueObjects;
-using Shared.ResultPattern;
 using SharedKernel.Constants;
-using SharedKernel.Primitives;
+
 
 namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
 {

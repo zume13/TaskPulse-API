@@ -1,7 +1,7 @@
-﻿using Application.Abstractions.Base;
-using Domain.Aggregates.User;
+﻿
+using Domain.Shared.Base;
 
-namespace Application.Abstractions.Repositories;
+namespace Domain.Aggregates.User;
 
 public interface IUserRepository : IRepository<User>
 {

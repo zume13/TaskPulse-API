@@ -1,11 +1,11 @@
 ﻿using Application.Abstractions.Auth;
 using Application.Abstractions.Base;
-using Application.Abstractions.Repositories;
 using Application.Constants;
 using Application.Dto;
 using Domain.Aggregates.RefreshToken;
+using Domain.Aggregates.User;
+using Domain.Shared.ResultPattern;
 using MediatR;
-using Shared.ResultPattern;
 
 namespace Application.Features.Auth.Commands.Refresh;
 

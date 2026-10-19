@@ -1,6 +1,6 @@
-﻿using Shared.ResultPattern;
+﻿using Domain.Shared.ResultPattern;
 
-namespace Domain.Aggregates.RefreshToken;
+namespace Domain.Aggregates.RefreshToken.Errors;
 
 public static class RefreshTokenErrors
 {

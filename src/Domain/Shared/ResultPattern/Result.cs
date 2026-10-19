@@ -1,7 +1,7 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
 
-namespace Shared.ResultPattern
+namespace Domain.Shared.ResultPattern
 {
     public class Result
     {

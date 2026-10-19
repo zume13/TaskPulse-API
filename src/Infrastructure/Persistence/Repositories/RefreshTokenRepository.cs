@@ -1,5 +1,4 @@
-﻿using Application.Abstractions.Repositories;
-using Domain.Aggregates.RefreshToken;
+﻿using Domain.Aggregates.RefreshToken;
 using Infrastructure.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 

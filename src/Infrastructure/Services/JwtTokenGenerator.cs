@@ -5,10 +5,11 @@ using Application.Abstractions.Auth;
 using Domain.Aggregates.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SharedKernel.Constants;
 
 namespace Infrastructure.Services;
 
-public class JwtTokenGenerator(IConfiguration configuration, TimeProvider timeProvider) : IJwtTokenGenerator
+public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerator
 {
     public AccessTokenResult GenerateAccessToken(User user)
     {
@@ -17,7 +18,7 @@ public class JwtTokenGenerator(IConfiguration configuration, TimeProvider timePr
         var audience = GetRequiredSetting("Jwt:Audience");
         var lifetimeMinutes = int.Parse(GetRequiredSetting("Jwt:AccessTokenExpirationMinutes"));
 
-        var nowUtc = timeProvider.GetUtcNow().UtcDateTime;
+        var nowUtc = SystemConstants.UtcNow;
         var expiresAtUtc = nowUtc.AddMinutes(lifetimeMinutes);
 
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.RateLimiting;
 using Api.Constants;
-using Domain.Aggregates.User.Enum;
+using Domain.Aggregates.User.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;

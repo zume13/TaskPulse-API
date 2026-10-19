@@ -1,4 +1,5 @@
-﻿using Shared.ResultPattern;
+﻿
+using Domain.Shared.ResultPattern;
 
 namespace Domain.Aggregates.Collaboration.Workspaces.Workspace.Errors
 {

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Shared.ResultPattern;
+﻿using Domain.Shared.ResultPattern;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Extensions;
 

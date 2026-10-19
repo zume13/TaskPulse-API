@@ -1,10 +1,10 @@
-﻿using Domain.Aggregates.User.Enum;
+﻿using Domain.Aggregates.User.Enums;
 using Domain.Aggregates.User.Errors;
 using Domain.Aggregates.User.Events;
 using Domain.Aggregates.User.ValueObjects;
+using Domain.Shared.Primitives;
+using Domain.Shared.ResultPattern;
 using Domain.Shared.ValueObjects;
-using SharedKernel.Primitives;
-using Shared.ResultPattern;
 
 namespace Domain.Aggregates.User;
 

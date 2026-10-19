@@ -1,7 +1,6 @@
-﻿using Application.Abstractions.Base;
-using Domain.Aggregates.RefreshToken;
+﻿using Domain.Shared.Base;
 
-namespace Application.Abstractions.Repositories;
+namespace Domain.Aggregates.RefreshToken;
 
 public interface IRefreshTokenRepository : IRepository<RefreshToken>
 {

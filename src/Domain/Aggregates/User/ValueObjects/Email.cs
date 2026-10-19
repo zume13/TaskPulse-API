@@ -1,5 +1,5 @@
-﻿using LeaveManagement.SharedKernel.Primitives;
-using Shared.ResultPattern;
+﻿using Domain.Shared.Primitives;
+using Domain.Shared.ResultPattern;
 
 namespace Domain.Aggregates.User.ValueObjects;
 

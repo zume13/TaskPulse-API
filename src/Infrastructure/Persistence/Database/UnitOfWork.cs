@@ -1,9 +1,9 @@
 ﻿using Application.Abstractions.Base;
 using Application.Abstractions.Events;
+using Domain.Shared.Primitives;
+using Domain.Shared.ResultPattern;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Primitives;
-using Shared.ResultPattern;
 
 namespace Infrastructure.Persistence.Database;
 

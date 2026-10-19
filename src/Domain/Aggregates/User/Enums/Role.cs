@@ -1,5 +1,5 @@
 ﻿
-namespace Domain.Aggregates.User.Enum
+namespace Domain.Aggregates.User.Enums
 {
     public enum Role
     {

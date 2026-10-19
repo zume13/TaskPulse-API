@@ -1,5 +1,5 @@
 ﻿
-namespace SharedKernel.DomainEvent
+namespace Domain.Shared.DomainEvent
 {
     public interface IDomainEventHandler<in TEvent> where TEvent : IDomainEvent
     {

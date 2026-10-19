@@ -1,7 +1,6 @@
-﻿using LMS.SharedKernel.Primitives;
-using SharedKernel.DomainEvent;
+﻿using Domain.Shared.DomainEvent;
 
-namespace SharedKernel.Primitives
+namespace Domain.Shared.Primitives
 {
     public abstract class AggregateRoot : Entity
     {

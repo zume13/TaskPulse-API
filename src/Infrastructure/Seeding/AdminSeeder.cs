@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Auth;
 using Domain.Aggregates.User;
-using Domain.Aggregates.User.Enum;
+using Domain.Aggregates.User.Enums;
 using Infrastructure.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

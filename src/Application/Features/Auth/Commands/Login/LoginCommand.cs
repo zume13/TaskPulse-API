@@ -1,6 +1,6 @@
 ﻿using Application.Dto;
+using Domain.Shared.ResultPattern;
 using MediatR;
-using Shared.ResultPattern;
 
 namespace Application.Features.Auth.Commands.Login;
 

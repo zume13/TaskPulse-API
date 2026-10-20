@@ -113,5 +113,5 @@ public class User : AggregateRoot
         return Result.Success();
     }
 
-    // introduce methods for changing email, password, first name, last name later on
+    // introduce methods for changing email, first name, last name later on
 }

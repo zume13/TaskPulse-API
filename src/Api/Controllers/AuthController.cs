@@ -3,6 +3,8 @@ using Api.Extensions;
 using Application.Dto;
 using Application.Features.Auth.Commands.ChangePassword;
 using Application.Features.Auth.Commands.Login;
+using Application.Features.Auth.Commands.Logout;
+using Application.Features.Auth.Commands.LogoutAll;
 using Application.Features.Auth.Commands.Refresh;
 using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Commands.VerifyEmail;
@@ -60,6 +62,40 @@ public class AuthController(ISender sender) : ControllerBase
             return result.ToProblemResult();
 
         return Ok(result.value);
+    }
+
+    [AllowAnonymous]
+    [EnableRateLimiting(ApiConstants.RateLimits.Anonymous)]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(RefreshTokenRequestDto request, CancellationToken cancellationToken)
+    {
+        var command = new LogoutCommand(request.RefreshToken);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("logout-all")]
+    public async Task<IActionResult> LogoutAll(CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var command = new LogoutAllCommand(userId.Value);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return NoContent();
     }
 
     [AllowAnonymous]

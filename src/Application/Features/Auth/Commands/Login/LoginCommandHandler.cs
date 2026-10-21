@@ -1,9 +1,9 @@
 ﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Base;
 using Application.Constants;
 using Application.Dto;
 using Domain.Aggregates.RefreshToken;
 using Domain.Aggregates.User;
+using Domain.Shared.Base;
 using Domain.Shared.ResultPattern;
 using MediatR;
 

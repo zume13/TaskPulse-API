@@ -1,5 +1,5 @@
-﻿using Application.Abstractions.Base;
-using Application.Abstractions.Events;
+﻿using Application.Abstractions.Events;
+using Domain.Shared.Base;
 using Domain.Shared.Primitives;
 using Domain.Shared.ResultPattern;
 using Microsoft.EntityFrameworkCore;

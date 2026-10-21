@@ -1,8 +1,8 @@
 ﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Base;
 using Application.Dto;
 using Domain.Aggregates.User;
 using Domain.Aggregates.User.Enums;
+using Domain.Shared.Base;
 using Domain.Shared.ResultPattern;
 using MediatR;
 

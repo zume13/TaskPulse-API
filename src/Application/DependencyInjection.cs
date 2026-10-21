@@ -20,6 +20,7 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IDomainEventHandler<UserRegistered>, SendVerificationEmailHandler>();
+        services.AddScoped<IDomainEventHandler<VerificationEmailRequested>, SendVerificationEmailHandler>();
 
         return services;
     }

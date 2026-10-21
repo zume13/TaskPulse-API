@@ -24,4 +24,12 @@ public class UserRepository : Repository<User>, IUserRepository
     {
         return await _dbContext.Users.AnyAsync(user => user.Email.Value == email, cancellationToken);
     }
+
+    public async Task<List<User>> GetByIdsAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Where(user => ids.Contains(user.Id))
+            .ToListAsync(cancellationToken);
+    }
 }

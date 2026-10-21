@@ -100,6 +100,21 @@ public class User : AggregateRoot
         return Result.Success();
     }
 
+    public Result RefreshVerificationToken(string newVerificationToken)
+    {
+        if (IsEmailVerified)
+            return UserErrors.EmailAlreadyVerified;
+
+        if (string.IsNullOrWhiteSpace(newVerificationToken))
+            return GeneralErrors.General.Empty("VerificationToken");
+
+        VerificationToken = newVerificationToken;
+
+        RaiseDomainEvent(new VerificationEmailRequested(Id, Email.Value, FirstName.Value, newVerificationToken));
+
+        return Result.Success();
+    }
+
     public Result ChangeRole(Role newRole)
     {
         if (!System.Enum.IsDefined(newRole))
@@ -113,5 +128,5 @@ public class User : AggregateRoot
         return Result.Success();
     }
 
-    // introduce methods for changing email, first name, last name later on
+    // changing email etc in the future
 }

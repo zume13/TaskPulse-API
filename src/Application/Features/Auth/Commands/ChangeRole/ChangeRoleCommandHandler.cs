@@ -1,5 +1,5 @@
-﻿using Application.Abstractions.Base;
-using Domain.Aggregates.User;
+﻿using Domain.Aggregates.User;
+using Domain.Shared.Base;
 using Domain.Shared.ResultPattern;
 using MediatR;
 

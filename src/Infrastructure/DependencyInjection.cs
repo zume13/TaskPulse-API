@@ -1,8 +1,9 @@
 ﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Base;
 using Application.Abstractions.Events;
 using Domain.Aggregates.RefreshToken;
+using Domain.Aggregates.Tasks.Task;
 using Domain.Aggregates.User;
+using Domain.Shared.Base;
 using Infrastructure.Events;
 using Infrastructure.Persistence.Database;
 using Infrastructure.Persistence.Repositories;
@@ -26,6 +27,8 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 

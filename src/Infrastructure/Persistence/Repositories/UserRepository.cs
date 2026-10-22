@@ -10,19 +10,34 @@ public class UserRepository : Repository<User>, IUserRepository
     {
     }
 
-    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByEmailAsync(
+        string email,
+        CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(user => user.Email.Value == email, cancellationToken);
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(
+                user => user.Email.Value == email,
+                cancellationToken);
     }
 
-    public async Task<User?> GetByVerificationTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByEmailAsync(
+        string email,
+        CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(user => user.VerificationToken == token, cancellationToken);
+        return await _dbContext.Users
+            .AnyAsync(
+                user => user.Email.Value == email,
+                cancellationToken);
     }
 
-    public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByVerificationTokenAsync(
+        string token,
+        CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Users.AnyAsync(user => user.Email.Value == email, cancellationToken);
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(
+                user => user.VerificationToken == token,
+                cancellationToken);
     }
 
     public async Task<List<User>> GetByIdsAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)

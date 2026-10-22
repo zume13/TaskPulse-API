@@ -11,7 +11,7 @@ using SharedKernel.Constants;
 
 namespace Domain.Aggregates.Tasks.Task
 {
-    public class Task : AggregateRoot
+    public class TaskItem : AggregateRoot
     {
         private readonly List<Comment> _comments = [];
 
@@ -39,9 +39,9 @@ namespace Domain.Aggregates.Tasks.Task
         public IReadOnlyCollection<Comment> Comments => 
             _comments.AsReadOnly();
 
-        private Task() { }   // EF Core
+        private TaskItem() { }   // EF Core
 
-        private Task(Guid id, Guid workspaceId, Name title, DateTime dueDate, Guid createdBy, Priority priority, DateTime UtcNow, string? description = null) : base(id)
+        private TaskItem(Guid id, Guid workspaceId, Name title, DateTime dueDate, Guid createdBy, Priority priority, DateTime UtcNow, string? description = null) : base(id)
         {
             WorkspaceId = workspaceId;
             Title = title;
@@ -53,7 +53,7 @@ namespace Domain.Aggregates.Tasks.Task
             CreatedAtUtc = UtcNow;
         }
 
-        public static ResultT<Task> Create(Guid workspaceId, Name title, DateTime dueDate, Guid createdBy, Priority priority = Priority.Medium, string? description = null)
+        public static ResultT<TaskItem> Create(Guid workspaceId, Name title, DateTime dueDate, Guid createdBy, Priority priority = Priority.Medium, string? description = null)
         {
             var utcNow = SystemConstants.UtcNow;
 
@@ -72,7 +72,7 @@ namespace Domain.Aggregates.Tasks.Task
             if (!Enum.IsDefined(priority))
                 return TaskErrors.InvalidPriority;
 
-            return new Task(Guid.NewGuid(), workspaceId, title, dueDate, createdBy, priority, utcNow, description);
+            return new TaskItem(Guid.NewGuid(), workspaceId, title, dueDate, createdBy, priority, utcNow, description);
         }
 
         /// <remarks>

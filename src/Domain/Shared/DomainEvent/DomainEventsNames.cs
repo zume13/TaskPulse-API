@@ -6,5 +6,6 @@ public static class DomainEventsNames
     {
         public const string UserRegistered = "UserRegistered";
         public const string PasswordChanged = "PasswordChanged";
+        public const string VerificationEmailRequested = "VerificationEmailRequested";
     }
 }

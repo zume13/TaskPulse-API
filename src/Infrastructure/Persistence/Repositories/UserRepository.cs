@@ -39,4 +39,12 @@ public class UserRepository : Repository<User>, IUserRepository
                 user => user.VerificationToken == token,
                 cancellationToken);
     }
+
+    public async Task<List<User>> GetByIdsAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Where(user => ids.Contains(user.Id))
+            .ToListAsync(cancellationToken);
+    }
 }

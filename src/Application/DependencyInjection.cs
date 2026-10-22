@@ -1,7 +1,9 @@
 ﻿using Application.Behaviours.Validations;
+using Application.Features.Auth.Events;
+using Domain.Aggregates.User.Events;
+using Domain.Shared.DomainEvent;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-
 
 namespace Application;
 
@@ -17,8 +19,8 @@ public static class DependencyInjection
             config.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
-        // to be added
-        //services.AddScoped<IDomainEventHandler<UserRegistered>, SendVerificationEmailHandler>();
+        services.AddScoped<IDomainEventHandler<UserRegistered>, SendVerificationEmailHandler>();
+        services.AddScoped<IDomainEventHandler<VerificationEmailRequested>, SendVerificationEmailHandler>();
 
         return services;
     }

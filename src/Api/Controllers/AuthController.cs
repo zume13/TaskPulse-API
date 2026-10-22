@@ -3,8 +3,11 @@ using Api.Extensions;
 using Application.Dto;
 using Application.Features.Auth.Commands.ChangePassword;
 using Application.Features.Auth.Commands.Login;
+using Application.Features.Auth.Commands.Logout;
+using Application.Features.Auth.Commands.LogoutAll;
 using Application.Features.Auth.Commands.Refresh;
 using Application.Features.Auth.Commands.Register;
+using Application.Features.Auth.Commands.ResendVerification;
 using Application.Features.Auth.Commands.VerifyEmail;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -64,6 +67,40 @@ public class AuthController(ISender sender) : ControllerBase
 
     [AllowAnonymous]
     [EnableRateLimiting(ApiConstants.RateLimits.Anonymous)]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(RefreshTokenRequestDto request, CancellationToken cancellationToken)
+    {
+        var command = new LogoutCommand(request.RefreshToken);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("logout-all")]
+    public async Task<IActionResult> LogoutAll(CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var command = new LogoutAllCommand(userId.Value);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return NoContent();
+    }
+
+    [AllowAnonymous]
+    [EnableRateLimiting(ApiConstants.RateLimits.Anonymous)]
     [HttpGet("verify-email")]
     public async Task<IActionResult> VerifyEmail([FromQuery] VerifyEmailRequestDto request, CancellationToken cancellationToken)
     {
@@ -75,6 +112,21 @@ public class AuthController(ISender sender) : ControllerBase
             return result.ToProblemResult();
 
         return Ok(new { message = "Your email has been verified. You can now log in." });
+    }
+
+    [AllowAnonymous]
+    [EnableRateLimiting(ApiConstants.RateLimits.Anonymous)]
+    [HttpPost("resend-verification")]
+    public async Task<IActionResult> ResendVerification(ResendVerificationRequestDto request, CancellationToken cancellationToken)
+    {
+        var command = new ResendVerificationCommand(request.Email);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(new { message = "If the account exists and is not verified yet, a new verification email has been sent." });
     }
 
     [Authorize]

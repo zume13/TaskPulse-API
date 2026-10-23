@@ -2,6 +2,8 @@
 using Api.Extensions;
 using Application.Dto;
 using Application.Features.Auth.Commands.ChangeRole;
+using Application.Features.Users.Commands.ChangeEmail;
+using Application.Features.Users.Commands.UpdateProfile;
 using Application.Features.Users.Queries.GetCurrentUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +30,44 @@ public class UsersController(ISender sender) : ControllerBase
             return result.ToProblemResult();
 
         return Ok(result.value);
+    }
+
+    [Authorize]
+    [HttpPut("update-profile")]
+    public async Task<IActionResult> UpdateProfile(UpdateProfileRequestDto request, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var command = new UpdateProfileCommand(userId.Value, request.FirstName, request.LastName);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
+    }
+
+    [Authorize]
+    [HttpPut("change-email")]
+    public async Task<IActionResult> ChangeEmail(ChangeEmailRequestDto request, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var command = new ChangeEmailCommand(userId.Value, request.NewEmail, request.CurrentPassword);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return NoContent();
     }
 
     [Authorize(Policy = ApiConstants.AuthPolicies.AdminOnly)]

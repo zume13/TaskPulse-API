@@ -27,4 +27,25 @@ public class LoggingEmailService(IConfiguration configuration, ILogger<LoggingEm
 
         return Task.CompletedTask;
     }
+
+    public Task SendPasswordResetEmailAsync(
+        string email,
+        string firstName,
+        string resetToken,
+        CancellationToken cancellationToken = default)
+    {
+        var baseUrl = configuration["Email:PasswordResetBaseUrl"]
+            ?? throw new InvalidOperationException("Configuration value 'Email:PasswordResetBaseUrl' is missing.");
+
+        var resetLink = $"{baseUrl}?token={Uri.EscapeDataString(resetToken)}";
+
+        // temporary stand-in
+        logger.LogInformation(
+            "Password reset email for {FirstName} <{Email}>: {ResetLink}",
+            firstName,
+            email,
+            resetLink);
+
+        return Task.CompletedTask;
+    }
 }

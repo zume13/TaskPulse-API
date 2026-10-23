@@ -115,6 +115,44 @@ public class User : AggregateRoot
         return Result.Success();
     }
 
+    public Result UpdateName(string firstName, string lastName)
+    {
+        var newFirstName = Name.Create(firstName);
+        var newLastName = Name.Create(lastName);
+
+        if (newFirstName.IsFailure)
+            return newFirstName.Error;
+
+        if (newLastName.IsFailure)
+            return newLastName.Error;
+
+        FirstName = newFirstName.value;
+        LastName = newLastName.value;
+
+        return Result.Success();
+    }
+
+    public Result ChangeEmail(string newEmail, string newVerificationToken)
+    {
+        var email = Email.Create(newEmail);
+
+        if (email.IsFailure)
+            return email.Error;
+
+        if (string.IsNullOrWhiteSpace(newVerificationToken))
+            return GeneralErrors.General.Empty("VerificationToken");
+
+        if (string.Equals(Email.Value, email.value.Value, StringComparison.OrdinalIgnoreCase))
+            return UserErrors.EmailUnchanged;
+
+        Email = email.value;
+        VerificationToken = newVerificationToken;
+
+        RaiseDomainEvent(new VerificationEmailRequested(Id, Email.Value, FirstName.Value, newVerificationToken));
+
+        return Result.Success();
+    }
+
     public Result ChangeRole(Role newRole)
     {
         if (!System.Enum.IsDefined(newRole))
@@ -127,6 +165,4 @@ public class User : AggregateRoot
 
         return Result.Success();
     }
-
-    // changing email etc in the future
 }

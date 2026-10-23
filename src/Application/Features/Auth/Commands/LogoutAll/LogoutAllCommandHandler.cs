@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.Base;
+﻿using Domain.Shared.Base;
 using Domain.Aggregates.RefreshToken;
 using Domain.Shared.ResultPattern;
 using MediatR;

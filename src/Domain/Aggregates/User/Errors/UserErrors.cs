@@ -1,5 +1,4 @@
-﻿
-using Domain.Shared.ResultPattern;
+﻿using Domain.Shared.ResultPattern;
 
 namespace Domain.Aggregates.User.Errors;
 
@@ -9,4 +8,5 @@ public static class UserErrors
     public static Error InvalidVerificationToken => Error.Validation("User.InvalidVerificationToken", "The verification token is invalid.");
     public static Error InvalidRole => Error.Validation("User.InvalidRole", "The role is invalid.");
     public static Error AlreadyInRole => Error.Conflict("User.AlreadyInRole", "The user already has this role.");
+    public static Error EmailUnchanged => Error.Validation("User.EmailUnchanged", "The new email is the same as the current email.");
 }

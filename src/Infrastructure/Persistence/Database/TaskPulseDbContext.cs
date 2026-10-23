@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.RefreshToken;
+﻿using Domain.Aggregates.PasswordResetToken;
+using Domain.Aggregates.RefreshToken;
 using Domain.Aggregates.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,8 @@ public class TaskPulseDbContext(DbContextOptions<TaskPulseDbContext> options) : 
     public DbSet<User> Users => Set<User>();
 
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.Collaboration.Workspaces.Invitations;
+﻿// The MemberInvited domain event is still not implemented 
+using Domain.Aggregates.Collaboration.Workspaces.Invitations;
 using Domain.Aggregates.Collaboration.Workspaces.Invitations.Enums;
 using Domain.Aggregates.Collaboration.Workspaces.Member;
 using Domain.Aggregates.Collaboration.Workspaces.Member.Enums;
@@ -78,13 +79,6 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
                 createdBy,
                 nowUtc);
 
-            // The creator automatically becomes the Owner.
-            workspace._members.Add(
-                WorkspaceMember.Create(
-                    createdBy,
-                    WorkspaceRole.Owner,
-                    nowUtc));
-
             return workspace;
         }
 
@@ -130,6 +124,9 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
             if (IsArchived)
                 return WorkspaceErrors.WorkspaceDeletedOrArchived;
 
+            if (invitedBy == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(invitedBy));
+
             if (!IsOwnerOrAdmin(invitedBy))
                 return WorkspaceErrors.NotAuthorized;
 
@@ -172,8 +169,7 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
                     role,
                     nowUtc));
 
-            // Raise MemberInvited domain event here if your
-            // AggregateRoot supports the event type you use.
+            // Raise MemberInvited domain event
 
             return Result.Success();
         }
@@ -283,8 +279,11 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
             if (IsArchived)
                 return WorkspaceErrors.WorkspaceDeletedOrArchived;
 
-            if (actorId == Guid.Empty || memberId == Guid.Empty)
+            if (actorId == Guid.Empty)
                 return GeneralErrors.General.Empty(nameof(actorId));
+
+            if (memberId == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(memberId));
 
             if (!Enum.IsDefined(newRole))
                 return WorkspaceErrors.InvalidWorkspaceRole;
@@ -329,8 +328,12 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
             if (IsArchived)
                 return WorkspaceErrors.WorkspaceDeletedOrArchived;
 
-            if (currentOwnerId == Guid.Empty || newOwnerId == Guid.Empty)
-                return WorkspaceErrors.InvalidWorkspaceId;
+            // FIX 4: These are user IDs, not a workspace ID.
+            if (currentOwnerId == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(currentOwnerId));
+
+            if (newOwnerId == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(newOwnerId));
 
             var currentOwner = _members
                 .FirstOrDefault(m => m.UserId == currentOwnerId);
@@ -394,6 +397,9 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
         {
             if (IsArchived)
                 return WorkspaceErrors.WorkspaceDeletedOrArchived;
+
+            if (actorId == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(actorId));
 
             var actor = _members.FirstOrDefault(
                 x => x.UserId == actorId);

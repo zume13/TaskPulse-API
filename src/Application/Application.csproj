@@ -16,4 +16,10 @@
     <PackageReference Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Workspace\Create\" />
+    <Folder Include="Features\Workspace\InviteMember\" />
+    <Folder Include="Features\Workspace\RemoveMember\" />
+  </ItemGroup>
+
 </Project>

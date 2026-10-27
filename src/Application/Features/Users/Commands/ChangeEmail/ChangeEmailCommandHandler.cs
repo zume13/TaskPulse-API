@@ -24,12 +24,12 @@ public class ChangeEmailCommandHandler(
             return AuthErrors.UserNotFound;
 
         if (!passwordHasher.Verify(request.CurrentPassword, user.PasswordHash.Value))
-            return ChangeEmailErrors.InvalidPassword;
+            return UserCommandErrors.ChangeEmail.InvalidPassword;
 
         var newEmail = request.NewEmail.Trim().ToLowerInvariant();
 
         if (newEmail != user.Email.Value && await userRepository.ExistsByEmailAsync(newEmail, cancellationToken))
-            return ChangeEmailErrors.EmailAlreadyInUse;
+            return UserCommandErrors.ChangeEmail.EmailAlreadyInUse;
 
         var changeResult = user.ChangeEmail(newEmail, secureTokenService.GenerateToken());
 

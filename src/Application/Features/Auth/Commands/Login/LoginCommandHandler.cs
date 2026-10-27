@@ -25,10 +25,10 @@ public class LoginCommandHandler(
         var user = await userRepository.GetByEmailAsync(email, cancellationToken);
 
         if (user is null || !passwordHasher.Verify(request.Password, user.PasswordHash.Value))
-            return LoginErrors.InvalidCredentials;
+            return AuthCommandErrors.LoginErrors.InvalidCredentials;
 
         if (!user.IsEmailVerified)
-            return LoginErrors.EmailNotVerified;
+            return AuthCommandErrors.LoginErrors.EmailNotVerified;
 
         var nowUtc = timeProvider.GetUtcNow().UtcDateTime;
 

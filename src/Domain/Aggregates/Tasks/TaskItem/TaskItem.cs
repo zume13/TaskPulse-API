@@ -9,7 +9,7 @@ using Domain.Shared.ValueObjects;
 using SharedKernel.Constants;
 
 
-namespace Domain.Aggregates.Tasks.Task
+namespace Domain.Aggregates.Tasks
 {
     public class TaskItem : AggregateRoot
     {
@@ -297,6 +297,33 @@ namespace Domain.Aggregates.Tasks.Task
 
             _comments.Add(result.value);
 
+            return Result.Success();
+        }
+
+        public Result AttachDocumentLink(DocumentLink documentLink)
+        {
+            if (IsDeleted)
+                return TaskErrors.TaskDeleted;
+
+            LinkedDocument = documentLink;
+            return Result.Success();
+        }
+
+        public Result RemoveDocumentLink()
+        {
+            if (IsDeleted)
+                return TaskErrors.TaskDeleted;
+
+            LinkedDocument = null;
+            return Result.Success();
+        }
+
+        public Result UpdateDocumentLink(DocumentLink documentLink)
+        {
+            if (IsDeleted)
+                return TaskErrors.TaskDeleted;
+
+            LinkedDocument = documentLink;
             return Result.Success();
         }
 

@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates.Tasks.Task;
+﻿using Domain.Aggregates.Tasks;
+using Domain.Aggregates.Tasks.Task;
 using Infrastructure.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 

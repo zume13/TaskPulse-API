@@ -20,7 +20,7 @@ public class RegisterCommandHandler(
         var email = request.Email.Trim().ToLowerInvariant();
 
         if (await userRepository.ExistsByEmailAsync(email, cancellationToken))
-            return RegisterErrors.EmailAlreadyExists;
+            return AuthCommandErrors.RegisterErrors.EmailAlreadyExists;
 
         var passwordHash = passwordHasher.Hash(request.Password);
         var verificationToken = secureTokenService.GenerateToken();

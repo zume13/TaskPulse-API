@@ -8,4 +8,8 @@ public static class DomainEventsNames
         public const string PasswordChanged = "PasswordChanged";
         public const string VerificationEmailRequested = "VerificationEmailRequested";
     }
+    public static class WorkspaceEventNames
+    {
+        public const string MemberInvited = "MemberInvited";
+    }
 }

@@ -22,7 +22,7 @@ public class ChangePasswordCommandHandler(
             return AuthErrors.UserNotFound;
 
         if (!passwordHasher.Verify(request.CurrentPassword, user.PasswordHash.Value))
-            return ChangePasswordErrors.InvalidCurrentPassword;
+            return AuthCommandErrors.ChangePasswordErrors.InvalidCurrentPassword;
 
         var changeResult = user.ChangePassword(passwordHasher.Hash(request.NewPassword));
 

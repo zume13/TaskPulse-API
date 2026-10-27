@@ -26,12 +26,12 @@ public class ResetPasswordCommandHandler(
             cancellationToken);
 
         if (resetToken is null || !resetToken.IsUsable(nowUtc))
-            return ResetPasswordErrors.InvalidToken;
+            return AuthCommandErrors.ResetPasswordErrors.InvalidToken;
 
         var user = await userRepository.GetByIdAsync(resetToken.UserId, cancellationToken);
 
         if (user is null)
-            return ResetPasswordErrors.InvalidToken;
+            return AuthCommandErrors.ResetPasswordErrors.InvalidToken;
 
         var changeResult = user.ChangePassword(passwordHasher.Hash(request.NewPassword));
 
@@ -41,7 +41,7 @@ public class ResetPasswordCommandHandler(
         var consumeResult = resetToken.Consume(nowUtc);
 
         if (consumeResult.IsFailure)
-            return ResetPasswordErrors.InvalidToken;
+            return AuthCommandErrors.ResetPasswordErrors.InvalidToken;
 
         var activeTokens = await refreshTokenRepository.GetUnrevokedByUserIdAsync(user.Id, cancellationToken);
 

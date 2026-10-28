@@ -17,9 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Workspace\Create\" />
-    <Folder Include="Features\Workspace\InviteMember\" />
-    <Folder Include="Features\Workspace\RemoveMember\" />
+    <Folder Include="Features\TaskItem\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Domain.Aggregates.Collaboration.Workspaces.Workspace;
+using Domain.Aggregates.Notifications;
 using Domain.Aggregates.PasswordResetToken;
 using Domain.Aggregates.RefreshToken;
 using Domain.Aggregates.Tasks;
@@ -10,7 +11,7 @@ namespace Infrastructure.Persistence.Database;
 public class TaskPulseDbContext(DbContextOptions<TaskPulseDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
-
+    public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();

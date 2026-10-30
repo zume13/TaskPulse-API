@@ -1,7 +1,9 @@
 ﻿using Domain.Aggregates.Tasks.Task.Enums;
+using Domain.Aggregates.Tasks.Task.Events;
 using Domain.Aggregates.Tasks.Task.Errors;
 using Domain.Aggregates.Tasks.Task.ValueObjects;
 using Domain.Aggregates.Tasks.TaskComment;
+using Domain.Aggregates.Tasks.TaskComment.Events;
 using Domain.Aggregates.Tasks.TaskComment.ValueObjects;
 using Domain.Shared.Primitives;
 using Domain.Shared.ResultPattern;
@@ -19,7 +21,7 @@ namespace Domain.Aggregates.Tasks
         public Name Title { get; private set; } = null!;
         public DateTime DueDate { get; private set; }
         public string? Description { get; private set; }
-        public Status Status { get; private set; }        
+        public Status Status { get; private set; }
         public Priority TaskPriority { get; private set; }
 
         public Guid? AssignedTo { get; private set; }
@@ -36,7 +38,7 @@ namespace Domain.Aggregates.Tasks
         public Guid? DeletedBy { get; private set; }
 
         public DocumentLink? LinkedDocument { get; private set; }
-        public IReadOnlyCollection<Comment> Comments => 
+        public IReadOnlyCollection<Comment> Comments =>
             _comments.AsReadOnly();
 
         private TaskItem() { }   // EF Core
@@ -101,10 +103,17 @@ namespace Domain.Aggregates.Tasks
             AssignedTo = assigneeId;
             AssignBy = assignedBy;
 
+            RaiseDomainEvent(new TaskAssigned(
+                Id,
+                WorkspaceId,
+                Title.Value,
+                assigneeId,
+                assignedBy));
+
             return Result.Success();
         }
 
-        public Result Unassign()
+        public Result Unassign(Guid unassignedBy)
         {
             if (IsDeleted)
                 return TaskErrors.TaskDeleted;
@@ -112,11 +121,23 @@ namespace Domain.Aggregates.Tasks
             if (Status == Status.Completed)
                 return TaskErrors.InvalidStatus;
 
+            if (unassignedBy == Guid.Empty)
+                return GeneralErrors.General.Empty(nameof(unassignedBy));
+
             if (AssignedTo is null)
                 return TaskErrors.NullAssignee;
 
+            var previousAssigneeId = AssignedTo.Value;
+
             AssignedTo = null;
             AssignBy = null;
+
+            RaiseDomainEvent(new TaskUnassigned(
+                Id,
+                WorkspaceId,
+                Title.Value,
+                previousAssigneeId,
+                unassignedBy));
 
             return Result.Success();
         }
@@ -152,6 +173,14 @@ namespace Domain.Aggregates.Tasks
             Status = Status.Completed;
             CompletedAtUtc = nowUtc;
             MarkedCompletedBy = completedBy;
+
+            RaiseDomainEvent(new TaskCompleted(
+                Id,
+                WorkspaceId,
+                Title.Value,
+                completedBy,
+                CreatedBy,
+                AssignedTo));
 
             return Result.Success();
         }
@@ -296,6 +325,15 @@ namespace Domain.Aggregates.Tasks
                 return result.Error;
 
             _comments.Add(result.value);
+
+            RaiseDomainEvent(new CommentAdded(
+                Id,
+                WorkspaceId,
+                Title.Value,
+                result.value.Id,
+                authorId,
+                CreatedBy,
+                AssignedTo));
 
             return Result.Success();
         }

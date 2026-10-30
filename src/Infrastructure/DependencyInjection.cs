@@ -1,12 +1,13 @@
 ﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Events;
+using Domain.Aggregates.Notifications;
 using Domain.Aggregates.RefreshToken;
 using Domain.Aggregates.Tasks.Task;
 using Domain.Aggregates.User;
 using Domain.Shared.Base;
-using Infrastructure.Events;
+using Infrastructure.Outbox;
 using Infrastructure.Persistence.Database;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.Repositories;
 using Infrastructure.Seeding;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -31,8 +32,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITaskItemRepository, TaskItemRepository>();
-
-        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ISecureTokenService, SecureTokenService>();
@@ -42,6 +42,9 @@ public static class DependencyInjection
         services.AddScoped<AdminSeeder>();
 
         services.AddSingleton<TimeProvider>(TimeProvider.System);
+
+        // Quartz jobs that run the domain event handlers from the outbox table.
+        services.AddOutboxProcessing(configuration);
 
         return services;
     }

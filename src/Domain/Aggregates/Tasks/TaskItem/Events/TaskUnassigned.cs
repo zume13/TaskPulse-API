@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Domain.Shared.DomainEvent;
 
 namespace Domain.Aggregates.Tasks.Task.Events
 {
-    internal class TaskUnassigned
+    public record TaskUnassigned(
+        Guid TaskId,
+        Guid WorkspaceId,
+        string TaskTitle,
+        Guid PreviousAssigneeId,
+        Guid UnassignedBy) : IDomainEvent
     {
+        public string DomainEventName => DomainEventsNames.TaskEventNames.TaskUnassigned;
     }
 }

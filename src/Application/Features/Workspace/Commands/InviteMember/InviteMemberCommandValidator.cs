@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Features.Workspace.InviteMember
+namespace Application.Features.Workspace.Commands.InviteMember
 {
     internal class InviteMemberCommandValidator
     {

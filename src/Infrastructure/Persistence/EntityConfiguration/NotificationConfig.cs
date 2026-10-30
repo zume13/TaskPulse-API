@@ -40,9 +40,6 @@ public class NotificationConfig : IEntityTypeConfiguration<Notification>
         builder.Property(x => x.TargetId)
             .IsRequired(false);
 
-        builder.Property(x => x.SourceMessageId)
-            .IsRequired(false);
-
         builder.Property(x => x.IsRead)
             .HasDefaultValue(false)
             .IsRequired();
@@ -52,12 +49,6 @@ public class NotificationConfig : IEntityTypeConfiguration<Notification>
 
         builder.Property(x => x.ReadAtUtc)
             .IsRequired(false);
-
-        // Prevent duplicate notifications from the same outbox message.
-        // SQL Server's filtered unique index excludes NULL values.
-        builder.HasIndex(x => x.SourceMessageId)
-            .IsUnique()
-            .HasFilter("[SourceMessageId] IS NOT NULL");
 
         // Efficiently retrieve a user's notifications.
         builder.HasIndex(x => new

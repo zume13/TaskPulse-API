@@ -25,7 +25,6 @@ namespace Domain.Aggregates.Notifications
             Guid? workspaceId,
             NotificationTarget targetType,
             Guid? targetId,
-            Guid? sourceMessageId,
             DateTime createdAtUtc)
             : base(id)
         {
@@ -36,7 +35,6 @@ namespace Domain.Aggregates.Notifications
             WorkspaceId = workspaceId;
             TargetType = targetType;
             TargetId = targetId;
-            SourceMessageId = sourceMessageId;
             CreatedAtUtc = createdAtUtc;
         }
 
@@ -54,12 +52,6 @@ namespace Domain.Aggregates.Notifications
 
         public Guid? TargetId { get; private set; }
 
-        /// <summary>
-        /// The outbox message this notification was created from. Unique, so
-        /// a retried outbox message can never create a second notification.
-        /// </summary>
-        public Guid? SourceMessageId { get; private set; }
-
         public bool IsRead { get; private set; }
 
         public DateTime CreatedAtUtc { get; private set; }
@@ -74,7 +66,6 @@ namespace Domain.Aggregates.Notifications
             Guid? workspaceId,
             NotificationTarget targetType,
             Guid? targetId,
-            Guid? sourceMessageId,
             DateTime nowUtc)
         {
             if (recipientId == Guid.Empty)
@@ -116,7 +107,6 @@ namespace Domain.Aggregates.Notifications
                 workspaceId,
                 targetType,
                 targetType == NotificationTarget.None ? null : targetId,
-                sourceMessageId,
                 nowUtc);
         }
 

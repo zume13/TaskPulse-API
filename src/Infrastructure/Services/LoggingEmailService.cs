@@ -48,4 +48,36 @@ public class LoggingEmailService(IConfiguration configuration, ILogger<LoggingEm
 
         return Task.CompletedTask;
     }
+
+    public Task SendPasswordChangedEmailAsync(
+        string email,
+        string firstName,
+        CancellationToken cancellationToken = default)
+    {
+        // temporary stand-in
+        logger.LogInformation(
+            "Password changed email for {FirstName} <{Email}>.",
+            firstName,
+            email);
+
+        return Task.CompletedTask;
+    }
+
+    public Task SendWorkspaceInvitationEmailAsync(
+        string email,
+        string firstName,
+        string workspaceName,
+        string invitedByName,
+        CancellationToken cancellationToken = default)
+    {
+        // temporary stand-in
+        logger.LogInformation(
+            "Workspace invitation email for {FirstName} <{Email}>: {InvitedByName} invited you to \"{WorkspaceName}\".",
+            firstName,
+            email,
+            invitedByName,
+            workspaceName);
+
+        return Task.CompletedTask;
+    }
 }

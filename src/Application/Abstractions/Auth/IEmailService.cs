@@ -14,4 +14,16 @@ public interface IEmailService
         string firstName,
         string resetToken,
         CancellationToken cancellationToken = default);
+
+    Task SendPasswordChangedEmailAsync(
+        string email,
+        string firstName,
+        CancellationToken cancellationToken = default);
+
+    Task SendWorkspaceInvitationEmailAsync(
+        string email,
+        string firstName,
+        string workspaceName,
+        string invitedByName,
+        CancellationToken cancellationToken = default);
 }

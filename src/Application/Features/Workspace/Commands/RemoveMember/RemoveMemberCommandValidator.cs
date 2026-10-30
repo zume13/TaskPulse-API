@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Features.Workspace.RemoveMember
+namespace Application.Features.Workspace.Commands.RemoveMember
 {
     internal class RemoveMemberCommandValidator
     {

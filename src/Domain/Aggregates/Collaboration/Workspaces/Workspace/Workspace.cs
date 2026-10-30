@@ -1,9 +1,9 @@
-﻿// The MemberInvited domain event is still not implemented 
-using Domain.Aggregates.Collaboration.Workspaces.Invitations;
+﻿using Domain.Aggregates.Collaboration.Workspaces.Invitations;
 using Domain.Aggregates.Collaboration.Workspaces.Invitations.Enums;
 using Domain.Aggregates.Collaboration.Workspaces.Member;
 using Domain.Aggregates.Collaboration.Workspaces.Member.Enums;
 using Domain.Aggregates.Collaboration.Workspaces.Workspace.Errors;
+using Domain.Aggregates.Collaboration.Workspaces.Workspace.Events;
 using Domain.Shared.Primitives;
 using Domain.Shared.ResultPattern;
 using Domain.Shared.ValueObjects;
@@ -162,14 +162,22 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
                 invitation.MarkExpired();
             }
 
-            _invitations.Add(
-                WorkspaceInvitation.Create(
-                    invitedUserId,
-                    invitedBy,
-                    role,
-                    nowUtc));
+            var newInvitation = WorkspaceInvitation.Create(
+                invitedUserId,
+                invitedBy,
+                role,
+                nowUtc);
 
-            // Raise MemberInvited domain event
+            _invitations.Add(newInvitation);
+
+            RaiseDomainEvent(new MemberInvited(
+                Id,
+                WorkspaceName.Value,
+                newInvitation.Id,
+                invitedUserId,
+                invitedBy,
+                role,
+                newInvitation.ExpiresAtUtc));
 
             return Result.Success();
         }
@@ -213,6 +221,13 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
                     nowUtc));
 
             invitation.Accept(nowUtc);
+
+            RaiseDomainEvent(new InvitationAccepted(
+                Id,
+                WorkspaceName.Value,
+                invitation.Id,
+                actorId,
+                invitation.InvitedBy));
 
             return Result.Success();
         }
@@ -259,6 +274,12 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
             }
 
             _members.Remove(member);
+
+            RaiseDomainEvent(new MemberRemoved(
+                Id,
+                WorkspaceName.Value,
+                memberId,
+                actorId));
 
             // Revoke any outstanding invitations issued to the removed user.
             foreach (var invitation in _invitations.Where(
@@ -316,7 +337,20 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
                 return WorkspaceErrors.UseOwnershipTransfer;
             }
 
+            var oldRole = member.Role;
+
             member.ChangeRole(newRole);
+
+            if (oldRole != newRole)
+            {
+                RaiseDomainEvent(new MemberRoleChanged(
+                    Id,
+                    WorkspaceName.Value,
+                    memberId,
+                    oldRole,
+                    newRole,
+                    actorId));
+            }
 
             return Result.Success();
         }
@@ -350,11 +384,29 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
             if (currentOwnerId == newOwnerId)
                 return WorkspaceErrors.CannotTransferOwnershipToSelf;
 
+            var newOwnerPreviousRole = newOwner.Role;
+
             // Demote the current owner.
             currentOwner.ChangeRole(WorkspaceRole.Admin);
 
             // Promote the selected member to owner.
             newOwner.ChangeRole(WorkspaceRole.Owner);
+
+            RaiseDomainEvent(new MemberRoleChanged(
+                Id,
+                WorkspaceName.Value,
+                currentOwnerId,
+                WorkspaceRole.Owner,
+                WorkspaceRole.Admin,
+                currentOwnerId));
+
+            RaiseDomainEvent(new MemberRoleChanged(
+                Id,
+                WorkspaceName.Value,
+                newOwnerId,
+                newOwnerPreviousRole,
+                WorkspaceRole.Owner,
+                currentOwnerId));
 
             return Result.Success();
         }

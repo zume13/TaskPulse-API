@@ -50,4 +50,16 @@ public sealed class WorkspaceRepository : Repository<Workspace>, IWorkspaceRepos
                 w => w.Id == workspaceId,
                 cancellationToken);
     }
+    public async Task<Workspace?> GetByIdWithMembersAndInvitationsAsync(
+    Guid workspaceId,
+    CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Set<Workspace>()
+            .Include(w => w.Members)
+            .Include(w => w.Invitations)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(
+                w => w.Id == workspaceId,
+                cancellationToken);
+    }
 }

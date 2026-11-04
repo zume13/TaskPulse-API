@@ -16,7 +16,7 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace.Errors
                 "Cannot perform this action on an archived workspace.");
 
         public static Error MemberNotFound =>
-            Error.Failure(
+            Error.NotFound(
                 "Workspace.MemberNotFound",
                 "The user is not a member of this workspace.");
 
@@ -26,7 +26,7 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace.Errors
                 "The user is already a member of this workspace.");
 
         public static Error InvitationNotFound =>
-            Error.Failure(
+            Error.NotFound(
                 "Workspace.InvitationNotFound",
                 "The invitation was not found.");
 
@@ -66,7 +66,7 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace.Errors
                 "The specified workspace role is invalid.");
 
         public static Error NotAuthorized =>
-            Error.Failure(
+            Error.Forbidden(
                 "Workspace.NotAuthorized",
                 "You are not authorized to perform this action.");
 

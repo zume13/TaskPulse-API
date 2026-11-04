@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Application.Dto;
+using Domain.Shared.ResultPattern;
+using MediatR;
 
-namespace Application.Features.Workspace.Commands.Create
-{
-    internal class CreateWorkspaceCommand
-    {
-    }
-}
+namespace Application.Features.Workspace.Commands.Create;
+
+public record CreateWorkspaceCommand(Guid UserId, string Name) : IRequest<ResultT<WorkspaceDto>>;

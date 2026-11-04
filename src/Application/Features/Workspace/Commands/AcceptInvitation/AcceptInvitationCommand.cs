@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Domain.Shared.ResultPattern;
+using MediatR;
 
-namespace Application.Features.Workspace.Commands.AcceptInvitation
-{
-    internal class AcceptInvitationCommand
-    {
-    }
-}
+namespace Application.Features.Workspace.Commands.AcceptInvitation;
+
+public record AcceptInvitationCommand(Guid InvitationId, Guid UserId) : IRequest<Result>;

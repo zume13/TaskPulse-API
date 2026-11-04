@@ -20,5 +20,9 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
         Task<Workspace?> GetByIdWithInvitationsAsync(
             Guid workspaceId,
             CancellationToken cancellationToken = default);
+
+        Task<Workspace?> GetByIdWithMembersAndInvitationsAsync(
+            Guid workspaceId,
+            CancellationToken cancellationToken = default);
     }
 }

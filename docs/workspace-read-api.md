@@ -41,8 +41,17 @@ fake containing domain-created workspaces and memberships. The application start
 
 These are HTTP/application tests, not PostgreSQL integration tests. They do not prove EF SQL
 translation, query counts, database connectivity, deployment configuration or full startup behavior.
-No SDK was available in the implementation environment, so compilation, restore and execution must
-be verified in an SDK-equipped environment before committing or merging.
+After .NET 10 SDK 10.0.403 was installed, solution restore passed, the solution build passed with
+0 warnings and 0 errors, and all 20 automated tests were executed and passed. The full solution
+test run also passed. These are the last actual code-verification results; the subsequent
+documentation-only correction did not rerun the build or tests.
+
+PostgreSQL-backed testing and real application startup remain outstanding. Before starting the API,
+obtain explicit approval for a disposable development database and authoritative schema setup from
+the backend owner. Review startup admin seeding and scheduled outbox/background-job effects: the
+full application can write to the database even when the endpoints under test are read-only.
+Do not start against an unknown or production database, or create a migration baseline to bypass
+these prerequisites.
 
 ## Manual API verification
 

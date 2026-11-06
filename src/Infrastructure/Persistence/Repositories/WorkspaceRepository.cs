@@ -14,7 +14,11 @@ public sealed class WorkspaceRepository : Repository<Workspace>, IWorkspaceRepos
         CancellationToken cancellationToken = default)
     {
         return await _dbContext.Set<Workspace>()
+            .AsNoTracking()
             .Where(w => w.Members.Any(m => m.UserId == userId))
+            .Include(w => w.Members)
+            .OrderBy(w => w.CreatedAtUtc)
+            .ThenBy(w => w.Id)
             .ToListAsync(cancellationToken);
     }
 

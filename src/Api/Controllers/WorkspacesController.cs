@@ -9,6 +9,8 @@ using Application.Features.Workspace.Commands.Leave;
 using Application.Features.Workspace.Commands.RemoveMember;
 using Application.Features.Workspace.Commands.Rename;
 using Application.Features.Workspace.Commands.TransferOwnership;
+using Application.Features.Workspace.Queries.GetWorkspace;
+using Application.Features.Workspace.Queries.GetWorkspaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,40 @@ namespace Api.Controllers;
 [Route("api/workspaces")]
 public class WorkspacesController(ISender sender) : ControllerBase
 {
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetWorkspaces(CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null || userId == Guid.Empty)
+            return Unauthorized();
+
+        var result = await sender.Send(new GetWorkspacesQuery(userId.Value), cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
+    }
+
+    [Authorize]
+    [HttpGet("{workspaceId:guid}")]
+    public async Task<IActionResult> GetWorkspace(Guid workspaceId, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null || userId == Guid.Empty)
+            return Unauthorized();
+
+        var result = await sender.Send(new GetWorkspaceQuery(workspaceId, userId.Value), cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
+    }
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(CreateWorkspaceRequestDto request, CancellationToken cancellationToken)

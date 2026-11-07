@@ -18,7 +18,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _dbContext.Set<TaskItem>()
                 .AsNoTracking()
-                .Where(task => task.AssignedTo == assigneeId)
+                .Where(task => task.AssignedTo == assigneeId && !task.IsDeleted)
                 .ToListAsync(cancellationToken);
         }
 
@@ -28,7 +28,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _dbContext.Set<TaskItem>()
                 .AsNoTracking()
-                .Where(task => task.CreatedBy == createdBy)
+                .Where(task => task.CreatedBy == createdBy && !task.IsDeleted)
                 .ToListAsync(cancellationToken);
         }
 
@@ -39,7 +39,7 @@ namespace Infrastructure.Persistence.Repositories
             return await _dbContext.Set<TaskItem>()
                 .Include(task => task.Comments)
                 .FirstOrDefaultAsync(
-                    task => task.Id == taskId,
+                    task => task.Id == taskId && !task.IsDeleted,
                     cancellationToken);
         }
 
@@ -49,7 +49,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _dbContext.Set<TaskItem>()
                 .AsNoTracking()
-                .Where(task => task.WorkspaceId == workspaceId)
+                .Where(task => task.WorkspaceId == workspaceId && !task.IsDeleted)
                 .ToListAsync(cancellationToken);
         }
     }

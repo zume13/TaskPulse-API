@@ -6,4 +6,5 @@ public static class TaskCommandErrors
 {
     public static Error TaskNotFound => Error.NotFound("Task.NotFound", "The task was not found.");
     public static Error NotAllowed => Error.Forbidden("Task.NotAllowed", "You are not allowed to do this with the task.");
+    public static Error AssigneeNotMember => Error.Validation("Task.AssigneeNotMember", "The assignee must be a member of the workspace.");
 }

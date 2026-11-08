@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Domain.Aggregates.PasswordResetToken;
 using Domain.Aggregates.Collaboration.Workspaces.Workspace;
+using Infrastructure.Services.Mailing;
 
 namespace Infrastructure;
 
@@ -40,6 +41,9 @@ public static class DependencyInjection
         services.AddScoped<ISecureTokenService, SecureTokenService>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IEmailService, LoggingEmailService>();
+
+        // Email:Provider = "Brevo" sends real emails, the default "Logging" only logs them.
+        services.AddEmailService(configuration);
 
         services.AddScoped<AdminSeeder>();
 

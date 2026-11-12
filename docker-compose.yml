@@ -1,0 +1,69 @@
+# Local stack: PostgreSQL + the TaskPulse API.
+#
+#   1. cp .env.example .env   and fill in the values
+#   2. docker compose up --build
+#   3. open http://localhost:8080/swagger   (Swagger only runs when ASPNETCORE_ENVIRONMENT=Development)
+#
+# The API applies EF Core migrations at startup (Database__MigrateOnStartup),
+# so the repo needs a migration first:
+#   dotnet ef migrations add Initial -p src/Infrastructure -s src/Api -o Persistence/Migrations
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-taskpulse}
+      POSTGRES_USER: ${POSTGRES_USER:-taskpulse}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      # Bound to localhost only, handy for psql / pgAdmin / dotnet ef.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB:-taskpulse};Username=${POSTGRES_USER:-taskpulse};Password=${POSTGRES_PASSWORD}
+
+      Database__MigrateOnStartup: "true"
+
+      # JWT. The secret must be long and random (32+ characters).
+      Jwt__Secret: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      Jwt__Issuer: ${JWT_ISSUER:-TaskPulse}
+      Jwt__Audience: ${JWT_AUDIENCE:-TaskPulse.Client}
+      Jwt__AccessTokenExpirationMinutes: ${JWT_ACCESS_TOKEN_MINUTES:-15}
+
+      # Optional first admin account. Skipped when email or password is empty.
+      AdminSeed__Email: ${ADMIN_EMAIL:-}
+      AdminSeed__Password: ${ADMIN_PASSWORD:-}
+      AdminSeed__FirstName: ${ADMIN_FIRST_NAME:-System}
+      AdminSeed__LastName: ${ADMIN_LAST_NAME:-Admin}
+
+      # Email. "Logging" only writes the email to the log; "Brevo" sends it.
+      Email__Provider: ${EMAIL_PROVIDER:-Logging}
+      Email__FromEmail: ${EMAIL_FROM:-}
+      Email__FromName: ${EMAIL_FROM_NAME:-TaskPulse}
+      Email__Brevo__ApiKey: ${BREVO_API_KEY:-}
+      Email__VerificationBaseUrl: ${VERIFICATION_BASE_URL:-http://localhost:8080/api/auth/verify-email}
+      Email__PasswordResetBaseUrl: ${PASSWORD_RESET_BASE_URL:-http://localhost:3000/reset-password}
+      Email__AppUrl: ${APP_URL:-}
+
+volumes:
+  pgdata:

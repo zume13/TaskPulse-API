@@ -10,9 +10,9 @@ namespace Domain.Aggregates.Tasks.TaskComment.ValueObjects
         {
             yield return Value;
         }
-        public ResultT<CommentBody> Create(string value)
+        public static ResultT<CommentBody> Create(string value)
         {
-            if(string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
                 return GeneralErrors.General.Empty("CommentBody");
 
             if (value.Length > 500)

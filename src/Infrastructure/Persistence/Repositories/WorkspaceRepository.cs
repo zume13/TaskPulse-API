@@ -7,7 +7,7 @@ namespace Infrastructure.Repositories;
 
 public sealed class WorkspaceRepository : Repository<Workspace>, IWorkspaceRepository
 {
-    public WorkspaceRepository(TaskPulseDbContext dbContext) : base(dbContext) {}
+    public WorkspaceRepository(TaskPulseDbContext dbContext) : base(dbContext) { }
 
     public async Task<List<Workspace>> GetByMemberIdAsync(
         Guid userId,
@@ -15,6 +15,25 @@ public sealed class WorkspaceRepository : Repository<Workspace>, IWorkspaceRepos
     {
         return await _dbContext.Set<Workspace>()
             .Where(w => w.Members.Any(m => m.UserId == userId))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<Workspace>> GetByMemberIdWithMembersAsync(
+        Guid userId,
+        bool includeArchived,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Set<Workspace>()
+            .AsNoTracking()
+            .Include(w => w.Members)
+            .Where(w => w.Members.Any(m => m.UserId == userId));
+
+        if (!includeArchived)
+            query = query.Where(w => !w.IsArchived);
+
+        return await query
+            .OrderByDescending(w => w.CreatedAtUtc)
+            .ThenBy(w => w.Id)
             .ToListAsync(cancellationToken);
     }
 

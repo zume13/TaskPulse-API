@@ -8,6 +8,9 @@ using Application.Features.Tasks.Commands.Reopen;
 using Application.Features.Tasks.Commands.Start;
 using Application.Features.Tasks.Commands.Unassign;
 using Application.Features.Tasks.Commands.Update;
+using Application.Features.Tasks.Queries.GetMyTasks;
+using Application.Features.Tasks.Queries.GetTaskById;
+using Application.Features.Tasks.Queries.GetWorkspaceTasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -168,5 +171,83 @@ public class TasksController(ISender sender) : ControllerBase
             return result.ToProblemResult();
 
         return NoContent();
+    }
+
+    [Authorize]
+    [HttpGet("workspaces/{workspaceId:guid}/tasks")]
+    public async Task<IActionResult> GetWorkspaceTasks(
+        Guid workspaceId,
+        [FromQuery] TaskListRequestDto request,
+        CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var query = new GetWorkspaceTasksQuery(
+            workspaceId,
+            userId.Value,
+            request.Status,
+            request.Priority,
+            request.AssignedTo,
+            request.Search,
+            request.SortBy,
+            request.Descending,
+            request.Page,
+            request.PageSize);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
+    }
+
+    [Authorize]
+    [HttpGet("tasks/mine")]
+    public async Task<IActionResult> GetMyTasks(
+        [FromQuery] TaskListRequestDto request,
+        CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var query = new GetMyTasksQuery(
+            userId.Value,
+            request.Status,
+            request.Priority,
+            request.Search,
+            request.SortBy,
+            request.Descending,
+            request.Page,
+            request.PageSize);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
+    }
+
+    [Authorize]
+    [HttpGet("tasks/{taskId:guid}")]
+    public async Task<IActionResult> GetById(Guid taskId, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await sender.Send(new GetTaskByIdQuery(taskId, userId.Value), cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
     }
 }

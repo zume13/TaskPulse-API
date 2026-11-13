@@ -9,6 +9,11 @@ namespace Domain.Aggregates.Collaboration.Workspaces.Workspace
             Guid userId,
             CancellationToken cancellationToken = default);
 
+        Task<List<Workspace>> GetByMemberIdWithMembersAsync(
+            Guid userId,
+            bool includeArchived,
+            CancellationToken cancellationToken = default);
+
         Task<Workspace?> GetByInvitationIdAsync(
             Guid invitationId,
             CancellationToken cancellationToken = default);

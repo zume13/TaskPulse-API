@@ -20,5 +20,10 @@ namespace Domain.Aggregates.Tasks.Task
         Task<TaskItem?> GetByIdWithCommentsAsync(
             Guid taskId,
             CancellationToken cancellationToken = default);
+
+        /// <summary>Filtered, sorted and paged list of non-deleted tasks, read-only.</summary>
+        Task<TaskSearchResult> SearchAsync(
+            TaskSearchCriteria criteria,
+            CancellationToken cancellationToken = default);
     }
 }

@@ -30,6 +30,7 @@ public class DeleteCommentCommandHandler(
 
         var nowUtc = timeProvider.GetUtcNow().UtcDateTime;
 
+        // Soft delete; only the author can delete (the domain checks it).
         var deleteResult = task.DeleteComment(request.CommentId, request.UserId, nowUtc);
 
         if (deleteResult.IsFailure)

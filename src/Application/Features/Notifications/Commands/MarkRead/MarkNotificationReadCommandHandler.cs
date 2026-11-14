@@ -4,17 +4,18 @@ using Domain.Shared.Base;
 using Domain.Shared.ResultPattern;
 using MediatR;
 
-namespace Application.Features.Notifications.Commands.MarkRead;
+namespace Application.Features.Notifications.Commands.MarkAsRead;
 
-public class MarkNotificationReadCommandHandler(
+public class MarkNotificationAsReadCommandHandler(
     INotificationRepository notificationRepository,
     IUnitOfWork unitOfWork,
-    TimeProvider timeProvider) : IRequestHandler<MarkNotificationReadCommand, Result>
+    TimeProvider timeProvider) : IRequestHandler<MarkNotificationAsReadCommand, Result>
 {
-    public async Task<Result> Handle(MarkNotificationReadCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(MarkNotificationAsReadCommand request, CancellationToken cancellationToken)
     {
         var notification = await notificationRepository.GetByIdAsync(request.NotificationId, cancellationToken);
 
+        // Someone else's notification looks the same as a missing one.
         if (notification is null || notification.RecipientId != request.UserId)
             return NotificationErrors.NotFound;
 

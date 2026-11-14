@@ -1,6 +1,7 @@
-﻿using Domain.Shared.ResultPattern;
+﻿using Application.Dto;
+using Domain.Shared.ResultPattern;
 using MediatR;
 
-namespace Application.Features.Notifications.Commands.MarkAllRead;
+namespace Application.Features.Notifications.Commands.MarkAllAsRead;
 
-public record MarkAllNotificationsReadCommand(Guid UserId) : IRequest<Result>;
+public record MarkAllNotificationsAsReadCommand(Guid UserId) : IRequest<ResultT<MarkedCountDto>>;

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Application.Features.Notifications.Commands.MarkRead;
+namespace Application.Features.Notifications.Commands.MarkAsRead;
 
-public class MarkNotificationReadCommandValidator : AbstractValidator<MarkNotificationReadCommand>
+public class MarkNotificationAsReadCommandValidator : AbstractValidator<MarkNotificationAsReadCommand>
 {
-    public MarkNotificationReadCommandValidator()
+    public MarkNotificationAsReadCommandValidator()
     {
         RuleFor(x => x.NotificationId)
             .NotEmpty().WithMessage("Notification id is required.");

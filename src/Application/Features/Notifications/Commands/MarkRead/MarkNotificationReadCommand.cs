@@ -1,6 +1,6 @@
 ﻿using Domain.Shared.ResultPattern;
 using MediatR;
 
-namespace Application.Features.Notifications.Commands.MarkRead;
+namespace Application.Features.Notifications.Commands.MarkAsRead;
 
-public record MarkNotificationReadCommand(Guid NotificationId, Guid UserId) : IRequest<Result>;
+public record MarkNotificationAsReadCommand(Guid NotificationId, Guid UserId) : IRequest<Result>;

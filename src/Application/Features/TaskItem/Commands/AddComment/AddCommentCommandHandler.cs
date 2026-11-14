@@ -26,13 +26,14 @@ public class AddCommentCommandHandler(
 
         var workspace = await workspaceRepository.GetByIdWithMembersAsync(task.WorkspaceId, cancellationToken);
 
+        // TaskItem.AddComment relies on this check: it does not verify membership itself.
         if (workspace is null || !workspace.IsMember(request.UserId))
             return TaskCommandErrors.TaskNotFound;
 
         if (workspace.IsArchived)
             return WorkspaceErrors.WorkspaceDeletedOrArchived;
 
-        var bodyResult = CommentBody.Create(request.Body);
+        var bodyResult = CommentBody.Create(request.Body.Trim());
 
         if (bodyResult.IsFailure)
             return bodyResult.Error;
@@ -47,6 +48,7 @@ public class AddCommentCommandHandler(
         if (saveResult.IsFailure)
             return saveResult.Error;
 
+        // The new comment is the last one in the collection.
         var comment = task.Comments.Last();
 
         var author = await userRepository.GetByIdAsync(request.UserId, cancellationToken);

@@ -29,13 +29,14 @@ public class EditCommentCommandHandler(
         if (workspace.IsArchived)
             return WorkspaceErrors.WorkspaceDeletedOrArchived;
 
-        var bodyResult = CommentBody.Create(request.Body);
+        var bodyResult = CommentBody.Create(request.Body.Trim());
 
         if (bodyResult.IsFailure)
             return bodyResult.Error;
 
         var nowUtc = timeProvider.GetUtcNow().UtcDateTime;
 
+        // Only the author can edit; the domain returns CommentNotOwnedByUser otherwise.
         var editResult = task.EditComment(request.CommentId, request.UserId, bodyResult.value, nowUtc);
 
         if (editResult.IsFailure)

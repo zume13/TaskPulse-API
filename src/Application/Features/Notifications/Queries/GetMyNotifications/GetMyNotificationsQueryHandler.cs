@@ -5,37 +5,40 @@ using MediatR;
 
 namespace Application.Features.Notifications.Queries.GetMyNotifications;
 
-public class GetMyNotificationsQueryHandler(
-    INotificationRepository notificationRepository) : IRequestHandler<GetMyNotificationsQuery, ResultT<NotificationListDto>>
+public class GetMyNotificationsQueryHandler(INotificationRepository notificationRepository)
+    : IRequestHandler<GetMyNotificationsQuery, ResultT<NotificationPageDto>>
 {
-    public async Task<ResultT<NotificationListDto>> Handle(GetMyNotificationsQuery request, CancellationToken cancellationToken)
+    public async Task<ResultT<NotificationPageDto>> Handle(
+        GetMyNotificationsQuery request,
+        CancellationToken cancellationToken)
     {
-        var skip = (request.Page - 1) * request.PageSize;
-
+        // Ask for one extra row to learn whether another page exists, without a COUNT query.
         var notifications = await notificationRepository.GetByRecipientAsync(
             request.UserId,
             request.UnreadOnly,
-            skip,
+            (request.Page - 1) * request.PageSize,
             request.PageSize + 1,
             cancellationToken);
 
         var hasMore = notifications.Count > request.PageSize;
 
-        var items = notifications
+        IReadOnlyList<NotificationDto> items = notifications
             .Take(request.PageSize)
-            .Select(n => new NotificationDto(
-                n.Id,
-                n.Type,
-                n.Title,
-                n.Message,
-                n.WorkspaceId,
-                n.TargetType,
-                n.TargetId,
-                n.IsRead,
-                n.CreatedAtUtc,
-                n.ReadAtUtc))
+            .Select(notification => new NotificationDto(
+                notification.Id,
+                notification.Type,
+                notification.Title,
+                notification.Message,
+                notification.WorkspaceId,
+                notification.TargetType,
+                notification.TargetId,
+                notification.IsRead,
+                notification.CreatedAtUtc,
+                notification.ReadAtUtc))
             .ToList();
 
-        return new NotificationListDto(items, request.Page, request.PageSize, hasMore);
+        var unreadCount = await notificationRepository.CountUnreadAsync(request.UserId, cancellationToken);
+
+        return new NotificationPageDto(items, request.Page, request.PageSize, hasMore, unreadCount);
     }
 }

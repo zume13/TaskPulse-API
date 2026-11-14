@@ -23,7 +23,7 @@ public static class DependencyInjection
             {
                 Title = "TaskPulse API",
                 Version = "v1",
-                Description = "huwag magmadali sa pag-ibig wait ka lang at busy pa ako sa project nato"
+                Description = "REST API for TaskPulse: workspaces, tasks, comments and notifications."
             });
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -89,6 +89,19 @@ public static class DependencyInjection
                         QueueLimit = 0
                     }));
         });
+
+        var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("Frontend", policy =>
+            {
+                if (allowedOrigins.Length > 0)
+                    policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
+            });
+        });
+
+        services.AddHealthChecks();
 
         return services;
     }

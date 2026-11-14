@@ -1,12 +1,9 @@
 ﻿using Api.Extensions;
 using Application.Dto;
-using Application.Features.Tasks.Commands.AddComment;
 using Application.Features.Tasks.Commands.Assign;
 using Application.Features.Tasks.Commands.Complete;
 using Application.Features.Tasks.Commands.Create;
 using Application.Features.Tasks.Commands.Delete;
-using Application.Features.Tasks.Commands.DeleteComment;
-using Application.Features.Tasks.Commands.EditComment;
 using Application.Features.Tasks.Commands.Reopen;
 using Application.Features.Tasks.Commands.Start;
 using Application.Features.Tasks.Commands.Unassign;
@@ -252,62 +249,5 @@ public class TasksController(ISender sender) : ControllerBase
             return result.ToProblemResult();
 
         return Ok(result.value);
-    }
-
-    [Authorize]
-    [HttpPost("tasks/{taskId:guid}/comments")]
-    public async Task<IActionResult> AddComment(Guid taskId, CommentRequestDto request, CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-
-        if (userId is null)
-            return Unauthorized();
-
-        var result = await sender.Send(new AddCommentCommand(taskId, userId.Value, request.Body), cancellationToken);
-
-        if (result.IsFailure)
-            return result.ToProblemResult();
-
-        return StatusCode(StatusCodes.Status201Created, result.value);
-    }
-
-    [Authorize]
-    [HttpPut("tasks/{taskId:guid}/comments/{commentId:guid}")]
-    public async Task<IActionResult> EditComment(
-        Guid taskId,
-        Guid commentId,
-        CommentRequestDto request,
-        CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-
-        if (userId is null)
-            return Unauthorized();
-
-        var result = await sender.Send(
-            new EditCommentCommand(taskId, commentId, userId.Value, request.Body),
-            cancellationToken);
-
-        if (result.IsFailure)
-            return result.ToProblemResult();
-
-        return NoContent();
-    }
-
-    [Authorize]
-    [HttpDelete("tasks/{taskId:guid}/comments/{commentId:guid}")]
-    public async Task<IActionResult> DeleteComment(Guid taskId, Guid commentId, CancellationToken cancellationToken)
-    {
-        var userId = User.GetUserId();
-
-        if (userId is null)
-            return Unauthorized();
-
-        var result = await sender.Send(new DeleteCommentCommand(taskId, commentId, userId.Value), cancellationToken);
-
-        if (result.IsFailure)
-            return result.ToProblemResult();
-
-        return NoContent();
     }
 }

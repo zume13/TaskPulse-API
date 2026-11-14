@@ -29,7 +29,6 @@ public static class DependencyInjection
         services.AddDbContext<TaskPulseDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -40,7 +39,6 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ISecureTokenService, SecureTokenService>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-        services.AddScoped<IEmailService, LoggingEmailService>();
 
         // Email:Provider = "Brevo" sends real emails, the default "Logging" only logs them.
         services.AddEmailService(configuration);

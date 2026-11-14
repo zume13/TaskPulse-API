@@ -39,6 +39,9 @@ services:
       - "${API_PORT:-8080}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      # Trust X-Forwarded-For / X-Forwarded-Proto from the reverse proxy in front of the API.
+      # Only safe when the API is NOT directly reachable from the internet.
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
 
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB:-taskpulse};Username=${POSTGRES_USER:-taskpulse};Password=${POSTGRES_PASSWORD}
 

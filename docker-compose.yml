@@ -32,6 +32,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:4200}
 
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB:-taskpulse};Username=${POSTGRES_USER:-taskpulse};Password=${POSTGRES_PASSWORD}
 
@@ -55,7 +56,7 @@ services:
       Email__FromName: ${EMAIL_FROM_NAME:-TaskPulse}
       Email__Brevo__ApiKey: ${BREVO_API_KEY:-}
       Email__VerificationBaseUrl: ${VERIFICATION_BASE_URL:-http://localhost:8080/api/auth/verify-email}
-      Email__PasswordResetBaseUrl: ${PASSWORD_RESET_BASE_URL:-http://localhost:3000/reset-password}
+      Email__PasswordResetBaseUrl: ${PASSWORD_RESET_BASE_URL:-http://localhost:4200/reset-password}
       Email__AppUrl: ${APP_URL:-}
 
 volumes:

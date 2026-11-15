@@ -5,6 +5,7 @@ using Domain.Aggregates.User.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Infrastructure.Persistence.Database;
 
 namespace Api;
 
@@ -101,7 +102,8 @@ public static class DependencyInjection
             });
         });
 
-        services.AddHealthChecks();
+        services.AddHealthChecks()
+            .AddDbContextCheck<TaskPulseDbContext>("database");
 
         return services;
     }

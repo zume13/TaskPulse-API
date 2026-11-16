@@ -4,4 +4,8 @@ using MediatR;
 
 namespace Application.Features.Auth.Commands.Login;
 
-public record LoginCommand(string Email, string Password) : IRequest<ResultT<TokenDto>>;
+public record LoginCommand(
+    string Email,
+    string Password,
+    string? IpAddress = null,
+    string? UserAgent = null) : IRequest<ResultT<TokenDto>>;

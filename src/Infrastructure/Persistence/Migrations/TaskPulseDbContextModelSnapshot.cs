@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.13")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -114,6 +114,47 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.ToTable("Workspaces", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Aggregates.LoginAudit.LoginAudit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(45)
+                        .HasColumnType("character varying(45)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Outcome")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAtUtc")
+                        .IsDescending();
+
+                    b.HasIndex("Email", "OccurredAtUtc")
+                        .IsDescending(false, true);
+
+                    b.HasIndex("UserId", "OccurredAtUtc")
+                        .IsDescending(false, true);
+
+                    b.ToTable("LoginAudits", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Aggregates.Notifications.Notification", b =>
@@ -478,6 +519,14 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("WorkspaceName")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Aggregates.LoginAudit.LoginAudit", b =>
+                {
+                    b.HasOne("Domain.Aggregates.User.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Domain.Aggregates.PasswordResetToken.PasswordResetToken", b =>

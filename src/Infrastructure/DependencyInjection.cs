@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Auth;
 using Domain.Aggregates.Notifications;
+using Domain.Aggregates.LoginAudit;
 using Domain.Aggregates.RefreshToken;
 using Domain.Aggregates.Tasks.Task;
 using Domain.Aggregates.User;
@@ -30,6 +31,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ILoginAuditRepository, LoginAuditRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITaskItemRepository, TaskItemRepository>();

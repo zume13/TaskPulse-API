@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Domain.Aggregates.Collaboration.Workspaces.Workspace;
+using Domain.Aggregates.LoginAudit;
 using Domain.Aggregates.Notifications;
 using Domain.Aggregates.PasswordResetToken;
 using Domain.Aggregates.RefreshToken;
@@ -19,6 +20,8 @@ public class TaskPulseDbContext(
     public DbSet<User> Users => Set<User>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    public DbSet<LoginAudit> LoginAudits => Set<LoginAudit>();
 
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 

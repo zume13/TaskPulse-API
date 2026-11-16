@@ -11,6 +11,7 @@ using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Commands.ResendVerification;
 using Application.Features.Auth.Commands.ResetPassword;
 using Application.Features.Auth.Commands.VerifyEmail;
+using Application.Features.Auth.Queries.GetLoginAudits;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,13 @@ public class AuthController(ISender sender) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequestDto request, CancellationToken cancellationToken)
     {
-        var command = new LoginCommand(request.Email, request.Password);
+        var ipAddress = HttpContext.Connection.RemoteIpAddress;
+
+        var command = new LoginCommand(
+            request.Email,
+            request.Password,
+            ipAddress is null ? null : (ipAddress.IsIPv4MappedToIPv6 ? ipAddress.MapToIPv4() : ipAddress).ToString(),
+            Request.Headers.UserAgent.ToString());
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -178,5 +185,28 @@ public class AuthController(ISender sender) : ControllerBase
             return result.ToProblemResult();
 
         return NoContent();
+    }
+
+    /// <summary>The signed-in user's own login attempts, newest first.</summary>
+    [Authorize]
+    [HttpGet("login-history")]
+    public async Task<IActionResult> GetLoginHistory(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = User.GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var query = new GetLoginAuditsQuery(userId, null, null, null, null, page, pageSize);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToProblemResult();
+
+        return Ok(result.value);
     }
 }

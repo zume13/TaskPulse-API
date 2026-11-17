@@ -10,6 +10,25 @@ public class UserRepository : Repository<User>, IUserRepository
     {
     }
 
+    public async Task<UserSearchResult> GetPagedAsync(
+        int skip,
+        int take,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Users.AsNoTracking();
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .OrderByDescending(user => user.RegisteredAtUtc)
+            .ThenBy(user => user.Id)
+            .Skip(Math.Max(0, skip))
+            .Take(Math.Clamp(take, 1, 100))
+            .ToListAsync(cancellationToken);
+
+        return new UserSearchResult(items, totalCount);
+    }
+
     public async Task<User?> GetByEmailAsync(
         string email,
         CancellationToken cancellationToken = default)

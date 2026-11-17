@@ -9,6 +9,57 @@ public sealed class WorkspaceRepository : Repository<Workspace>, IWorkspaceRepos
 {
     public WorkspaceRepository(TaskPulseDbContext dbContext) : base(dbContext) { }
 
+    public async Task<WorkspaceSearchResult> GetAllWithMembersAsync(
+        bool includeArchived,
+        int skip,
+        int take,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Set<Workspace>().AsNoTracking();
+
+        if (!includeArchived)
+            query = query.Where(w => !w.IsArchived);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Include(w => w.Members)
+            .AsSplitQuery()
+            .OrderByDescending(w => w.CreatedAtUtc)
+            .ThenBy(w => w.Id)
+            .Skip(Math.Max(0, skip))
+            .Take(Math.Clamp(take, 1, 100))
+            .ToListAsync(cancellationToken);
+
+        return new WorkspaceSearchResult(items, totalCount);
+    }
+
+    public async Task<List<UserWorkspaceMembership>> GetMembershipsByUserIdsAsync(
+        IReadOnlyCollection<Guid> userIds,
+        bool includeArchived,
+        CancellationToken cancellationToken = default)
+    {
+        if (userIds.Count == 0)
+            return [];
+
+        var query = _dbContext.Set<Workspace>().AsNoTracking();
+
+        if (!includeArchived)
+            query = query.Where(w => !w.IsArchived);
+
+        return await query
+            .SelectMany(
+                w => w.Members.Where(m => userIds.Contains(m.UserId)),
+                (w, m) => new UserWorkspaceMembership(
+                    m.UserId,
+                    w.Id,
+                    w.WorkspaceName.Value,
+                    w.IsArchived,
+                    m.Role,
+                    m.JoinedAtUtc))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<List<Workspace>> GetByMemberIdAsync(
         Guid userId,
         CancellationToken cancellationToken = default)

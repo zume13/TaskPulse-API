@@ -2,8 +2,15 @@
 
 namespace Domain.Aggregates.User;
 
+public sealed record UserSearchResult(IReadOnlyList<User> Items, int TotalCount);
+
 public interface IUserRepository : IRepository<User>
 {
+    Task<UserSearchResult> GetPagedAsync(
+        int skip,
+        int take,
+        CancellationToken cancellationToken = default);
+
     Task<User?> GetByEmailAsync(
         string email,
         CancellationToken cancellationToken = default);

@@ -18,7 +18,7 @@ public class TaskDocumentController(ISender sender) : ControllerBase
     {
         var userId = User.GetUserId();
 
-        if (userId is null)
+        if (userId is null || userId == Guid.Empty)
             return Unauthorized();
 
         var command = new SetDocumentLinkCommand(taskId, userId.Value, request.Url, request.Label);
@@ -37,7 +37,7 @@ public class TaskDocumentController(ISender sender) : ControllerBase
     {
         var userId = User.GetUserId();
 
-        if (userId is null)
+        if (userId is null || userId == Guid.Empty)
             return Unauthorized();
 
         var result = await sender.Send(new RemoveDocumentLinkCommand(taskId, userId.Value), cancellationToken);

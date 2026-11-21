@@ -98,6 +98,10 @@ public class TaskItemConfig : IEntityTypeConfiguration<TaskItem>
         builder.Navigation(x => x.Comments)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
+        builder.HasMany(x => x.Documents).WithOne().HasForeignKey(x => x.TaskId)
+            .IsRequired().OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(x => x.Documents).UsePropertyAccessMode(PropertyAccessMode.Field);
+
         // Workspace task lists and dashboards filter by status.
         builder.HasIndex(x => new { x.WorkspaceId, x.Status });
     }

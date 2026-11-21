@@ -308,6 +308,61 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("TaskComments", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Aggregates.Tasks.TaskDocument.TaskDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsLegacy")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UrlHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .UseCollation("C");
+
+                    b.Property<Guid>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("TaskId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_TaskDocuments_TaskId_LegacySlot")
+                        .HasFilter("\"IsLegacy\"");
+
+                    b.HasIndex("TaskId", "UrlHash")
+                        .IsUnique()
+                        .HasDatabaseName("IX_TaskDocuments_TaskId_UrlHash");
+
+                    b.ToTable("TaskDocuments", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Aggregates.Tasks.TaskItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -584,6 +639,21 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Aggregates.Tasks.TaskDocument.TaskDocument", b =>
+                {
+                    b.HasOne("Domain.Aggregates.User.User", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Aggregates.Tasks.TaskItem", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Aggregates.Tasks.TaskItem", b =>
                 {
                     b.HasOne("Domain.Aggregates.User.User", null)
@@ -764,6 +834,8 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Aggregates.Tasks.TaskItem", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

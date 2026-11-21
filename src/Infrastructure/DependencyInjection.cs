@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Domain.Aggregates.PasswordResetToken;
 using Domain.Aggregates.Collaboration.Workspaces.Workspace;
+using Domain.Aggregates.WorkspaceDocuments;
 using Infrastructure.Services.Mailing;
 
 namespace Infrastructure;
@@ -37,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<ITaskItemRepository, TaskItemRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
+        services.AddScoped<IWorkspaceDocumentRepository, WorkspaceDocumentRepository>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ISecureTokenService, SecureTokenService>();

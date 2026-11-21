@@ -1,5 +1,8 @@
 ﻿using Domain.Shared.Base;
 using Domain.Shared.ResultPattern;
+using Domain.Aggregates.WorkspaceDocuments;
+using Infrastructure.Persistence.EntityConfiguration;
+using Npgsql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +24,17 @@ public sealed class UnitOfWork(
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+        catch (DbUpdateConcurrencyException exception) when (exception.Entries.Any(x => x.Entity is WorkspaceDocument))
+        {
+            return WorkspaceDocumentErrors.Changed;
+        }
+        catch (DbUpdateException exception) when (
+            exception.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation } postgres
+            && postgres.ConstraintName == WorkspaceDocumentConfig.UniqueFileIndex)
+        {
+            // Never log the duplicate key detail: it contains a potentially private Google file ID.
+            return WorkspaceDocumentErrors.Duplicate;
         }
         catch (DbUpdateException exception)
         {

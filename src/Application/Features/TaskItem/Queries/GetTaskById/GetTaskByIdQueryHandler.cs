@@ -16,7 +16,7 @@ public class GetTaskByIdQueryHandler(
 {
     public async Task<ResultT<TaskDetailsDto>> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
     {
-        var task = await taskRepository.GetByIdWithCommentsAsync(request.TaskId, cancellationToken);
+        var task = await taskRepository.GetByIdWithDetailsAsync(request.TaskId, cancellationToken);
 
         if (task is null)
             return TaskCommandErrors.TaskNotFound;
@@ -72,6 +72,9 @@ public class GetTaskByIdQueryHandler(
             task.CreatedAtUtc,
             task.CompletedAtUtc,
             linkedDocument,
-            commentDtos);
+            commentDtos)
+        {
+            Documents = task.Documents.OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id).Select(TaskDocumentDto.From).ToList()
+        };
     }
 }

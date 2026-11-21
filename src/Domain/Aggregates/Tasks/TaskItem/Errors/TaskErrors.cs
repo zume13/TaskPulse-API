@@ -24,8 +24,8 @@ namespace Domain.Aggregates.Tasks.Task.Errors
     {
         public static Error InvalidUrl => Error.Failure("Invalid.Document", "Cannot add a document with an invalid URL.");
         public static Error InvalidUriScheme => Error.Failure("Invalid.Document", "Only HTTPS URLs are allowed.");
-        public static Error InvalidHost => Error.Failure("Invalid.Document", "Only Google Docs URLs are allowed.");
-        public static Error InvalidAbsolutePath => Error.Failure("Invalid.Document", "The URL must point to a Google Docs document.");
+        public static Error InvalidHost => Error.Failure("Invalid.Document", "Use a supported document or repository provider.");
+        public static Error InvalidAbsolutePath => Error.Failure("Invalid.Document", "The URL must point to a supported document, file or repository.");
         public static Error LabelTooLong => Error.Failure("Invalid.Document", $"The document label has exceeded the maximum length of characters.");
     }
 }

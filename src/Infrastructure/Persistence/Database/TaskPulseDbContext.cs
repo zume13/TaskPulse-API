@@ -5,6 +5,7 @@ using Domain.Aggregates.Notifications;
 using Domain.Aggregates.PasswordResetToken;
 using Domain.Aggregates.RefreshToken;
 using Domain.Aggregates.Tasks;
+using Domain.Aggregates.Tasks.TaskDocument;
 using Domain.Aggregates.User;
 using Domain.Shared.Primitives;
 using Infrastructure.Outbox;
@@ -28,6 +29,7 @@ public class TaskPulseDbContext(
     public DbSet<Workspace> Workspaces => Set<Workspace>();
 
     public DbSet<TaskItem> TaskItems => Set<TaskItem>();
+    public DbSet<TaskDocument> TaskDocuments => Set<TaskDocument>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 

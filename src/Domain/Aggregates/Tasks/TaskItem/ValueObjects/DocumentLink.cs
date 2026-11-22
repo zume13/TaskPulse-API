@@ -6,11 +6,13 @@ namespace Domain.Aggregates.Tasks.Task.ValueObjects
     public sealed record DocumentLink
     {
         public const int MaxLabelLength = 200;
+        public const int MaxUrlLength = 2000;
 
         private static readonly HashSet<string> AllowedHosts =
             new(StringComparer.OrdinalIgnoreCase)
             {
                 "docs.google.com",
+                "drive.google.com",
                 "word.cloud.microsoft",
                 "excel.cloud.microsoft",
                 "powerpoint.cloud.microsoft",
@@ -82,8 +84,19 @@ namespace Domain.Aggregates.Tasks.Task.ValueObjects
             if (!AllowedHosts.Contains(parsed.Host))
                 return TaskDocumentErrors.InvalidHost;
 
+            // A document link is not a place to persist Google OAuth credentials.
+            if (parsed.Host is "docs.google.com" or "drive.google.com"
+                && new[] { parsed.Query.TrimStart('?'), parsed.Fragment.TrimStart('#') }
+                    .SelectMany(value => value.Split('&')).Any(part =>
+                        ParameterName(part) is "access_token" or "refresh_token" or "id_token"))
+                return TaskDocumentErrors.InvalidUrl;
+
+            parsed = CanonicalizeGoogleSession(parsed);
             if (!HasValidPath(parsed))
                 return TaskDocumentErrors.InvalidAbsolutePath;
+
+            if (rawUrl.Length > MaxUrlLength)
+                return TaskDocumentErrors.InvalidUrl;
 
             if (string.IsNullOrWhiteSpace(rawLabel))
                 return GeneralErrors.General.Empty(nameof(rawLabel));
@@ -107,6 +120,10 @@ namespace Domain.Aggregates.Tasks.Task.ValueObjects
         {
             var host = uri.Host;
             var path = uri.AbsolutePath;
+
+            if (host.Equals("drive.google.com", StringComparison.OrdinalIgnoreCase))
+                return System.Text.RegularExpressions.Regex.IsMatch(path,
+                    "\\A/file/d/[A-Za-z0-9_-]+(?:/(?:view|edit|preview))?/?\\z");
 
             if (host.Equals("docs.google.com", StringComparison.OrdinalIgnoreCase))
             {
@@ -135,5 +152,20 @@ namespace Domain.Aggregates.Tasks.Task.ValueObjects
 
             return path.Length > 1;
         }
+
+        private static Uri CanonicalizeGoogleSession(Uri uri)
+        {
+            if (uri.Host is not ("docs.google.com" or "drive.google.com")) return uri;
+            var path = System.Text.RegularExpressions.Regex.Replace(uri.AbsolutePath,
+                "\\A/(document|spreadsheets|presentation)/u/[0-9]+/d/", "/$1/d/");
+            var query = string.Join("&", uri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries)
+                .Where(part => ParameterName(part) != "authuser"));
+            var fragment = string.Join("&", uri.Fragment.TrimStart('#').Split('&')
+                .Where(part => ParameterName(part) != "authuser"));
+            return new UriBuilder(uri) { Path = path, Query = query, Fragment = fragment }.Uri;
+        }
+
+        private static string ParameterName(string part) =>
+            Uri.UnescapeDataString(part.Split('=')[0]).ToLowerInvariant();
     }
 }

@@ -21,6 +21,9 @@ namespace Domain.Aggregates.Tasks.Task
             Guid taskId,
             CancellationToken cancellationToken = default);
 
+        Task<TaskItem?> GetByIdWithDocumentsAsync(Guid taskId, CancellationToken cancellationToken = default);
+        Task<TaskItem?> GetByIdWithDetailsAsync(Guid taskId, CancellationToken cancellationToken = default);
+
         /// <summary>Filtered, sorted and paged list of non-deleted tasks, read-only.</summary>
         Task<TaskSearchResult> SearchAsync(
             TaskSearchCriteria criteria,

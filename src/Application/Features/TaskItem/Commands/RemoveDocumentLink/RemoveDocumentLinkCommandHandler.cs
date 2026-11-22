@@ -14,7 +14,7 @@ public class RemoveDocumentLinkCommandHandler(
 {
     public async Task<Result> Handle(RemoveDocumentLinkCommand request, CancellationToken cancellationToken)
     {
-        var task = await taskRepository.GetByIdAsync(request.TaskId, cancellationToken);
+        var task = await taskRepository.GetByIdWithDocumentsAsync(request.TaskId, cancellationToken);
 
         if (task is null || task.IsDeleted)
             return TaskCommandErrors.TaskNotFound;

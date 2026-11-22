@@ -54,6 +54,14 @@ namespace Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public Task<TaskItem?> GetByIdWithDocumentsAsync(Guid taskId, CancellationToken cancellationToken = default) =>
+            _dbContext.TaskItems.Include(x => x.Documents)
+                .FirstOrDefaultAsync(x => x.Id == taskId && !x.IsDeleted, cancellationToken);
+
+        public Task<TaskItem?> GetByIdWithDetailsAsync(Guid taskId, CancellationToken cancellationToken = default) =>
+            _dbContext.TaskItems.Include(x => x.Documents).Include(x => x.Comments).AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.Id == taskId && !x.IsDeleted, cancellationToken);
+
         public async Task<TaskSearchResult> SearchAsync(
             TaskSearchCriteria criteria,
             CancellationToken cancellationToken = default)

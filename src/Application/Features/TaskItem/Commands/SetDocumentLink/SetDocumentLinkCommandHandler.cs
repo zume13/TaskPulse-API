@@ -11,11 +11,11 @@ namespace Application.Features.Tasks.Commands.SetDocumentLink;
 public class SetDocumentLinkCommandHandler(
     ITaskItemRepository taskRepository,
     IWorkspaceRepository workspaceRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<SetDocumentLinkCommand, Result>
+    IUnitOfWork unitOfWork, TimeProvider timeProvider) : IRequestHandler<SetDocumentLinkCommand, Result>
 {
     public async Task<Result> Handle(SetDocumentLinkCommand request, CancellationToken cancellationToken)
     {
-        var task = await taskRepository.GetByIdAsync(request.TaskId, cancellationToken);
+        var task = await taskRepository.GetByIdWithDocumentsAsync(request.TaskId, cancellationToken);
 
         if (task is null || task.IsDeleted)
             return TaskCommandErrors.TaskNotFound;
@@ -42,7 +42,7 @@ public class SetDocumentLinkCommandHandler(
         if (linkResult.IsFailure)
             return linkResult.Error;
 
-        var setResult = task.UpdateDocumentLink(linkResult.value);
+        var setResult = task.UpdateDocumentLink(linkResult.value, request.UserId, timeProvider.GetUtcNow().UtcDateTime);
 
         if (setResult.IsFailure)
             return setResult.Error;

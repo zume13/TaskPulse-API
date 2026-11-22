@@ -13,7 +13,7 @@ using SharedKernel.Constants;
 
 namespace Domain.Aggregates.Tasks
 {
-    public class TaskItem : AggregateRoot
+    public partial class TaskItem : AggregateRoot
     {
         private readonly List<Comment> _comments = [];
 
@@ -340,11 +340,7 @@ namespace Domain.Aggregates.Tasks
 
         public Result AttachDocumentLink(DocumentLink documentLink)
         {
-            if (IsDeleted)
-                return TaskErrors.TaskDeleted;
-
-            LinkedDocument = documentLink;
-            return Result.Success();
+            return UpdateDocumentLink(documentLink, CreatedBy, SystemConstants.UtcNow);
         }
 
         public Result RemoveDocumentLink()
@@ -353,16 +349,13 @@ namespace Domain.Aggregates.Tasks
                 return TaskErrors.TaskDeleted;
 
             LinkedDocument = null;
+            _documents.RemoveAll(x => x.IsLegacy);
             return Result.Success();
         }
 
         public Result UpdateDocumentLink(DocumentLink documentLink)
         {
-            if (IsDeleted)
-                return TaskErrors.TaskDeleted;
-
-            LinkedDocument = documentLink;
-            return Result.Success();
+            return UpdateDocumentLink(documentLink, CreatedBy, SystemConstants.UtcNow);
         }
 
         /// <summary>Overdue is a pure function of stored status, due date and the clock. Never persisted.</summary>

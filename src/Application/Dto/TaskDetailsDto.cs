@@ -17,4 +17,7 @@ public record TaskDetailsDto(
     DateTime CreatedAtUtc,
     DateTime? CompletedAtUtc,
     DocumentLinkDto? LinkedDocument,
-    IReadOnlyList<CommentDto> Comments);
+    IReadOnlyList<CommentDto> Comments)
+{
+    public IReadOnlyList<TaskDocumentDto> Documents { get; init; } = [];
+}
